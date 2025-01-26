@@ -23,7 +23,7 @@ function Login() {
     try {
       const response = await getUser(user); // Espera la respuesta de login()
       console.log(response); // Puedes depurar la respuesta del servidor
-      navigate("/home"); // Redirige después de una respuesta exitosa
+      navigate("/"); // Redirige después de una respuesta exitosa
     } catch (error) {
       console.error("Error al registrar el usuario:", error);
     }
