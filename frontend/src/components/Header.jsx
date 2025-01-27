@@ -1,4 +1,4 @@
-
+import { VscAccount } from "react-icons/vsc";
 import { Link } from "react-router-dom"
 
 function Header() {
@@ -23,8 +23,8 @@ function Header() {
                             <Link to="/cart" className='nav-link text-secondary'>
                                 Cart
                             </Link>
-                            <Link to="/orders" className='nav-link text-secondary'>
-                                Orders
+                            <Link to="/account" className='nav-link text-secondary'>
+                                <VscAccount size={28}/>
                             </Link>
                         </nav>
                     </div>

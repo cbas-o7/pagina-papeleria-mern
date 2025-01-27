@@ -6,7 +6,8 @@ import Home from './pages/Home.jsx'
 import ProductsPage from "./pages/ProductsPage.jsx";
 import Favorites from "./pages/Favorites.jsx";
 import Cart from "./pages/Cart.jsx";
-import Orders from "./pages/Orders.jsx";
+import Account from "./pages/Account.jsx";
+import ProductDetails from "./pages/ProductDetails.jsx";
  
 export default function App() {
   return (
@@ -16,9 +17,10 @@ export default function App() {
             <Route path='/signup' element={<Signup/>}></Route>
             <Route path='/' element={<Home/>}></Route>
             <Route path='/products' element={<ProductsPage/>}></Route>
+            <Route path='/products/:id' element={<ProductDetails />} />
             <Route path='/favorites' element={<Favorites/>}></Route>
             <Route path='/cart' element={<Cart/>}></Route>
-            <Route path='/orders' element={<Orders/>}></Route>
+            <Route path='/account' element={<Account/>}></Route>
         </Routes>
     </BrowserRouter>
   )

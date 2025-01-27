@@ -1,5 +1,6 @@
 //"use client"
 
+import { Link } from "react-router-dom"
 import { useState } from "react"
 import ProductCard from "./ProductCard"
 
@@ -80,9 +81,8 @@ export default function Products() {
                 {categories.map((category) => (
                   <button
                     key={category}
-                    className={`list-group-item list-group-item-light  ${
-                      selectedCategory === category ? "active" : ""
-                    }`}
+                    className={`list-group-item list-group-item-light  ${selectedCategory === category ? "active" : ""
+                      }`}
                     onClick={() => setSelectedCategory(category)}
                   >
                     {category}
@@ -97,12 +97,15 @@ export default function Products() {
         {/* Apartado donde se despliegan los productos */}
         <div className="col-md-9">
           <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-            
+
             {/* Crea las tarjetas del producto llamando al componente ProductCard */}
             {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+              <Link to={`/products/${product.id}`} key={product.id} style={{ textDecoration: "none", color: "inherit" }}>
+                <ProductCard product={product} />
+              </Link>
+
             ))}
-            
+
           </div>
         </div>
 
