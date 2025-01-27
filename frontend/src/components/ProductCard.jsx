@@ -8,7 +8,7 @@ export default function ProductCard({ product }) {
                 <div className="position-relative">
                     <img src={product.image || "/placeholder.svg"} alt={product.name} className="card-img-top" />
                     <button className="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2">
-                        <IoHeartOutline  />
+                        <IoHeartOutline />
                     </button>
                 </div>
                 <div className="card-body">

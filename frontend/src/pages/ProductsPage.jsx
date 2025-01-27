@@ -8,7 +8,10 @@ export default function ProductsPage() {
     <div className="d-flex flex-column min-vh-100">
       <Header />
 
-      <Products />
+      <main className="flex-grow-1">
+        <Products />
+      </main>
+
 
       <Footer />
     </div>

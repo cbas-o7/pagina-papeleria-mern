@@ -1,9 +1,21 @@
-import React from 'react'
+import FavoriteProducts from "../components/FavoriteProducts";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
-function Favorites() {
+
+export default function Favorites() {
   return (
-    <div>Favorites</div>
+    <div className="d-flex flex-column min-vh-100">
+      <Header />
+
+      <main className="flex-grow-1">
+
+      <FavoriteProducts />
+
+      </main>
+      
+
+      <Footer />
+    </div>
   )
 }
-
-export default Favorites
