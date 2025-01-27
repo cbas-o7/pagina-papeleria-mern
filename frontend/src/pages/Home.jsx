@@ -19,12 +19,12 @@ const categories = [
 const img = 'https://flowbite.com/docs/images/examples/image-1@2x.jpg'
 
 const products = [
-    { name: "Luxury Notebook", price: "$24.99", image: img, category: "Notebooks" },
-    { name: "Fountain Pen Set", price: "$49.99", image: img, category: "Writing Instruments" },
-    { name: "Leather Planner", price: "$34.99", image: img, category: "Organizers" },
-    { name: "Colored Pencil Set", price: "$19.99", image: img, category: "Art Supplies" },
-    { name: "Desk Organizer", price: "$29.99", image: img, category: "Desk Accessories" },
-    { name: "Canvas Backpack", price: "$39.99", image: img, category: "Backpacks" },
+    { id: 1, name: "Luxury Notebook", price: "$24.99", image: img, category: "Notebooks" },
+    { id: 2, name: "Fountain Pen Set", price: "$49.99", image: img, category: "Writing Instruments" },
+    { id: 3, name: "Leather Planner", price: "$34.99", image: img, category: "Organizers" },
+    { id: 4, name: "Colored Pencil Set", price: "$19.99", image: img, category: "Art Supplies" },
+    { id: 5, name: "Desk Organizer", price: "$29.99", image: img, category: "Desk Accessories" },
+    { id: 6 , name: "Canvas Backpack", price: "$39.99", image: img, category: "Backpacks" },
 ]
 
 
