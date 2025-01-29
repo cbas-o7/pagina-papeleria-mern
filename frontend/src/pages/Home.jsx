@@ -31,7 +31,7 @@ const products = [
 
 export default function Home() {
 
-    const randomProducts = useRandomProducts(products, 6);
+    const randomProducts = useRandomProducts();
 
     const {
         paginatedCategories,

@@ -1,4 +1,5 @@
 import User from "../models/user.js";
+import Product from "../models/product.js";
 
 export const getUserLogin = async (req, res) => {
     const { email, password } = req.body; // Recoge email y password de los parámetros de consulta
@@ -52,3 +53,23 @@ export const userSignup = async (req, res) => {
         res.status(500).json({ success: false, message: 'Error en el servidor' })
     }
 }
+
+export const getProducts = async (req, res) => {
+    try {
+        const products = await Product.find(); // Obtener productos de MongoDB
+        res.status(200).json({ success: true, data: products });
+    } catch (error) {
+        console.error("Error al obtener productos:", error.message);
+        res.status(500).json({ success: false, message: "Error en el servidor" });
+    }
+};
+
+export const getRandomProducts = async (req, res) => {
+    try {
+        const products = await Product.aggregate([{ $sample: { size: 6 } }]); // Obtiene 6 productos aleatorios
+        res.status(200).json({ success: true, data: products });
+    } catch (error) {
+        console.error("Error al obtener productos aleatorios:", error.message);
+        res.status(500).json({ success: false, message: "Error en el servidor" });
+    }
+};

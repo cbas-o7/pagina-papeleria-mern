@@ -1,18 +1,22 @@
 import { useState, useEffect } from "react";
+import { getRandomProducts } from "../services/api";
 
 // Custom hook para manejar productos aleatorios
-export const useRandomProducts = (products, itemsPerPage = 6) => {
-  const [randomProducts, setRandomProducts] = useState([]);
-
-  // Función para seleccionar productos aleatorios
-  const getRandomProducts = () => {
-    const shuffled = [...products].sort(() => 0.5 - Math.random());
-    return shuffled.slice(0, itemsPerPage);
-  };
+export const useRandomProducts = () => {
+  const [products, setProducts] = useState([]);
 
   useEffect(() => {
-    setRandomProducts(getRandomProducts());
-  }, [products, itemsPerPage]);
+    const fetchProducts = async () => {
+      try {
+        const data = await getRandomProducts();
+        setProducts(data);
+      } catch (err) {
+        console.error("Error al obtener productos: ", err);
+      }
+    };
 
-  return randomProducts;
+    fetchProducts();
+  }, []);
+
+  return products;
 };

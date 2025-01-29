@@ -3,8 +3,8 @@
 import { Link } from "react-router-dom"
 import { useState } from "react"
 import ProductCard from "./ProductCard"
+import { useProducts } from "../hooks/useProducts"
 
-const img = 'https://flowbite.com/docs/images/examples/image-1@2x.jpg'
 
 const categories = [
   "All",
@@ -16,53 +16,14 @@ const categories = [
   "Backpacks",
 ]
 
-const products = [
-  {
-    id: 1,
-    name: "Luxury Notebook",
-    price: "$24.99",
-    image: img,
-    category: "Notebooks",
-  },
-  {
-    id: 2,
-    name: "Fountain Pen Set",
-    price: "$49.99",
-    image: img,
-    category: "Writing Instruments",
-  },
-  {
-    id: 3,
-    name: "Leather Planner",
-    price: "$34.99",
-    image: img,
-    category: "Organizers",
-  },
-  {
-    id: 4,
-    name: "Colored Pencil Set",
-    price: "$19.99",
-    image: img,
-    category: "Art Supplies",
-  },
-  {
-    id: 5,
-    name: "Desk Organizer",
-    price: "$29.99",
-    image: img,
-    category: "Desk Accessories",
-  },
-  {
-    id: 6,
-    name: "Canvas Backpack",
-    price: "$39.99",
-    image: img,
-    category: "Backpacks",
-  },
-]
+
 
 export default function Products() {
   const [selectedCategory, setSelectedCategory] = useState("All")
+
+  const {products} = useProducts()
+
+  console.log(products)
 
   const filteredProducts =
     selectedCategory === "All" ? products : products.filter((product) => product.category === selectedCategory)
@@ -100,7 +61,7 @@ export default function Products() {
 
             {/* Crea las tarjetas del producto llamando al componente ProductCard */}
             {filteredProducts.map((product) => (
-              <Link to={`/products/${product.id}`} key={product.id} style={{ textDecoration: "none", color: "inherit" }}>
+              <Link to={`/products/${product._id}`} key={product._id} style={{ textDecoration: "none", color: "inherit" }}>
                 <ProductCard product={product} />
               </Link>
 

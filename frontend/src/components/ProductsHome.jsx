@@ -3,7 +3,7 @@ import ProductCard from './ProductCard'
 import { Link } from "react-router-dom"
 
 
-const ProductsHome = ({products}) => {
+const ProductsHome = ({ products }) => {
 
 
     return (
@@ -13,9 +13,9 @@ const ProductsHome = ({products}) => {
                 <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
 
                     {products.map((product) => (
-                        <Link to={`/products/${product.id}`} key={product.id} style={{ textDecoration: "none", color: "inherit" }}>
-                        <ProductCard product={product} />
-                      </Link>
+                        <Link to={`/products/${product._id}`} key={product._id} style={{ textDecoration: "none", color: "inherit" }}>
+                            <ProductCard product={product} />
+                        </Link>
                     ))}
 
                 </div>
