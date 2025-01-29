@@ -25,7 +25,7 @@ export const getUser = async (user) => {
   }
 };
 
-export const getProduct = async () => {
+export const getProducts = async () => {
   try {
     const response = await axios.get(`${API_URL}/products`);
 
@@ -38,6 +38,18 @@ export const getProduct = async () => {
 export const getRandomProducts = async () => {
   try {
     const response = await axios.get(`${API_URL}/`);
+    return response.data.data; // Retorna solo los productos
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Error en la solicitud");
+  }
+};
+
+export const getProductByID = async ({id}) => {
+  try {
+    //console.log(`${API_URL}/products/${id}`)
+
+    const response = await axios.get(`${API_URL}/products/${id}`);
+    //console.log(response.data.data)
     return response.data.data; // Retorna solo los productos
   } catch (error) {
     throw new Error(error.response?.data?.message || "Error en la solicitud");

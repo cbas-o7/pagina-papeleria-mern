@@ -1,5 +1,6 @@
 import User from "../models/user.js";
 import Product from "../models/product.js";
+import Category from "../models/category.js";
 
 export const getUserLogin = async (req, res) => {
     const { email, password } = req.body; // Recoge email y password de los parámetros de consulta
@@ -57,7 +58,9 @@ export const userSignup = async (req, res) => {
 export const getProducts = async (req, res) => {
     try {
         const products = await Product.find(); // Obtener productos de MongoDB
-        res.status(200).json({ success: true, data: products });
+        const categories = await Category.find(); // Obtener categorías de MongoDB
+
+        res.status(200).json({ success: true, data: {products, categories} });
     } catch (error) {
         console.error("Error al obtener productos:", error.message);
         res.status(500).json({ success: false, message: "Error en el servidor" });
@@ -67,9 +70,30 @@ export const getProducts = async (req, res) => {
 export const getRandomProducts = async (req, res) => {
     try {
         const products = await Product.aggregate([{ $sample: { size: 6 } }]); // Obtiene 6 productos aleatorios
-        res.status(200).json({ success: true, data: products });
+        const categories = await Category.find();
+
+        res.status(200).json({ success: true, data: {products, categories} });
     } catch (error) {
         console.error("Error al obtener productos aleatorios:", error.message);
         res.status(500).json({ success: false, message: "Error en el servidor" });
+    }
+};
+
+
+export const getProduct = async (req, res) => {
+    const { id } = req.params;
+    
+    try {
+        const product = await Product.findById(id); // Buscar el producto en la base de datos
+
+        if (!product) {
+            return res.status(404).json({ success: false, message: 'Producto no encontrado' });
+        }
+
+        // Si el producto es encontrado, devolverlo al frontend
+        res.status(200).json({ success: true, data: product });
+    } catch (error) {
+        console.error(`Error al obtener el producto: ${error.message}`);
+        res.status(500).json({ success: false, message: 'Error en el servidor' });
     }
 };

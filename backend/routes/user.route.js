@@ -2,7 +2,8 @@ import express  from "express";
 import { getUserLogin,
     userSignup,
     getProducts,
-    getRandomProducts
+    getRandomProducts,
+    getProduct
  } from "../controller/user.controller.js";
 
 const router = express.Router()
@@ -20,5 +21,7 @@ router.post(`/signup`, userSignup)
 router.get("/products", getProducts)
 
 router.get("/", getRandomProducts)
+
+router.get("/products/:id", getProduct)
 
 export default router
