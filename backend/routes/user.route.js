@@ -3,7 +3,8 @@ import { getUserLogin,
     userSignup,
     getProducts,
     getRandomProducts,
-    getProduct
+    getProduct,
+    getOrdersByUserId
  } from "../controller/user.controller.js";
 
 const router = express.Router()
@@ -23,5 +24,7 @@ router.get("/products", getProducts)
 router.get("/", getRandomProducts)
 
 router.get("/products/:id", getProduct)
+
+router.post("/account", getOrdersByUserId);
 
 export default router

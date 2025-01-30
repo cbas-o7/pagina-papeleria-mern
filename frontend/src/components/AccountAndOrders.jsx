@@ -1,48 +1,26 @@
 import React, { useState } from "react";
 import { SlArrowUp, SlArrowDown } from "react-icons/sl";
+import { useOrders } from "../hooks/useOrders";
 
-const user = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  address: "123 Main St, Anytown, AN 12345",
-  avatar: "/placeholder.svg",
-};
-
-const orders = [
-  {
-    id: 1,
-    date: "2023-05-15",
-    total: 74.97,
-    status: "Delivered",
-    products: [
-      { id: 1, name: "Luxury Notebook", price: 24.99, quantity: 2, image: "/placeholder.svg" },
-      { id: 2, name: "Fountain Pen Set", price: 49.99, quantity: 1, image: "/placeholder.svg" },
-    ],
-  },
-  {
-    id: 2,
-    date: "2023-05-01",
-    total: 49.99,
-    status: "Shipped",
-    products: [
-      { id: 3, name: "Leather Planner", price: 34.99, quantity: 1, image: "/placeholder.svg" },
-      { id: 4, name: "Colored Pencil Set", price: 19.99, quantity: 1, image: "/placeholder.svg" },
-    ],
-  },
-  {
-    id: 3,
-    date: "2023-04-20",
-    total: 89.97,
-    status: "Processing",
-    products: [
-      { id: 5, name: "Desk Organizer", price: 29.99, quantity: 1, image: "/placeholder.svg" },
-      { id: 6, name: "Canvas Backpack", price: 39.99, quantity: 1, image: "/placeholder.svg" },
-    ],
-  },
-];
 
 export default function AccountAndOrders() {
   const [openOrder, setOpenOrder] = useState(null); // Track which order is open
+
+  // Obtener el documento almacenado en localStorage con la clave 'user'
+  const user = JSON.parse(localStorage.getItem('user'));
+  var userId = ""
+  // Verificar si el usuario existe en localStorage
+  if (user) {
+    // Obtener el _id
+    userId = user._id;
+    //console.log('User ID:', userId);
+  } else {
+    console.log('No se encontró el usuario en localStorage.');
+  }
+
+  
+  const { orders } = useOrders("679223f140fed36595b74944")
+  //console.log(orders)
 
   const toggleOrder = (orderId) => {
     setOpenOrder(openOrder === orderId ? null : orderId);
@@ -57,7 +35,6 @@ export default function AccountAndOrders() {
           <div>
             <p className="mb-1 fw-bold">{user.name}</p>
             <p className="mb-1 text-muted">{user.email}</p>
-            <p className="mb-1 text-muted">{user.address}</p>
           </div>
           <button className="btn btn-primary ms-auto">Edit Profile</button>
         </div>
@@ -65,24 +42,24 @@ export default function AccountAndOrders() {
 
       <h2 className="mb-4">Your Orders</h2>
       {orders.map((order) => (
-        <div key={order.id} className="card mb-3">
+        <div key={order._id} className="card mb-3">
           <div className="card-header d-flex justify-content-between align-items-center">
             <div>
-              <h5 className="mb-0">Order #{order.id}</h5>
-              <small className="text-muted">{order.date}</small>
+              <h5 className="mb-0">Order #{order._id}</h5>
+              <small className="text-muted">{order.fechaCreacion}</small>
             </div>
             <button
               className="btn btn-link text-dark"
-              onClick={() => toggleOrder(order.id)}
-              aria-expanded={openOrder === order.id}
+              onClick={() => toggleOrder(order._id)}
+              aria-expanded={openOrder === order._id}
             >
-              {openOrder === order.id ? <SlArrowUp /> : <SlArrowDown /> }
+              {openOrder === order._id ? <SlArrowUp /> : <SlArrowDown />}
             </button>
           </div>
-          {openOrder === order.id && (
+          {openOrder === order._id && (
             <div className="card-body">
               <p>
-                <span className="text-muted">Status:</span> <strong>{order.status}</strong>
+                <span className="text-muted">Status:</span> <strong>{order.estado}</strong>
               </p>
               <table className="table">
                 <thead>
@@ -95,7 +72,8 @@ export default function AccountAndOrders() {
                 </thead>
                 <tbody>
                   {order.products.map((product) => (
-                    <tr key={product.id}>
+
+                    <tr key={product.productId}>
                       <td>
                         <div className="d-flex align-items-center">
                           <img
@@ -107,9 +85,9 @@ export default function AccountAndOrders() {
                           {product.name}
                         </div>
                       </td>
-                      <td>${product.price.toFixed(2)}</td>
+                      <td>${product.unitPrice.toFixed(2)}</td>
                       <td>{product.quantity}</td>
-                      <td>${(product.price * product.quantity).toFixed(2)}</td>
+                      <td>${(product.unitPrice * product.quantity).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
