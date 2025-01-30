@@ -21,7 +21,19 @@ import { useProducts } from "../hooks/useProducts"
 export default function Products() {
   const [selectedCategory, setSelectedCategory] = useState("All")
 
-  const {products, categories} = useProducts()
+  const user = JSON.parse(localStorage.getItem('user'));
+  var userId = ""
+  // Verificar si el usuario existe en localStorage
+  if (user) {
+    // Obtener el _id
+    userId = user._id;
+    //console.log('User ID:', userId);
+  } else {
+    console.log('No se encontró el usuario en localStorage.');
+  }
+
+
+  const { products, categories } = useProducts()
 
   //console.log(products , categories)
 
@@ -58,14 +70,14 @@ export default function Products() {
         {/* Apartado donde se despliegan los productos */}
         <div className="col-md-9">
           <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-            
+
             {/* Crea las tarjetas del producto llamando al componente ProductCard */}
             {filteredProducts.map((product) => (
-              
-              
+
+
 
               <Link to={`/products/${product._id}`} key={product._id} style={{ textDecoration: "none", color: "inherit" }}>
-                <ProductCard product={product} />
+                <ProductCard product={product} userId={userId} />
               </Link>
 
             ))}

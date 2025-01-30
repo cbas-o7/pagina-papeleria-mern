@@ -16,7 +16,7 @@ function ProductDetailed(id) {
     const [comments, setComments] = useState(initialComments)
     const [newComment, setNewComment] = useState({ author: "", content: "", rating: 5 })
 
-    console.log(product)
+    //console.log(product)
 
     if (!product) {
         return <div className="container mt-5">Product not found</div>

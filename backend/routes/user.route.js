@@ -4,7 +4,10 @@ import { getUserLogin,
     getProducts,
     getRandomProducts,
     getProduct,
-    getOrdersByUserId
+    getOrdersByUserId,
+    getFavorites,
+    addFavorite,
+    removeFavorite
  } from "../controller/user.controller.js";
 
 const router = express.Router()
@@ -26,5 +29,11 @@ router.get("/", getRandomProducts)
 router.get("/products/:id", getProduct)
 
 router.post("/account", getOrdersByUserId);
+
+router.post("/favorites", getFavorites);
+
+router.post("/favorites/add", addFavorite);
+
+router.post("/favorites/remove", removeFavorite);
 
 export default router

@@ -8,7 +8,7 @@ export const useProduct = (id) => {
         const fetchProduct = async () => {
             try {
                 const productData = await getProductByID( id );  // Usamos la función que definiste
-                console.log(productData)
+                //console.log(productData)
                 setProduct(productData);
             } catch (err) 
             {console.error(err.message); // Si hay error, se muestra en consola

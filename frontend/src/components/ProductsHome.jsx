@@ -1,10 +1,23 @@
-import React from 'react'
+
 import ProductCard from './ProductCard'
 import { Link } from "react-router-dom"
 
 
 const ProductsHome = ({ products }) => {
 
+    const user = JSON.parse(localStorage.getItem('user'));
+    var userId = ""
+    // Verificar si el usuario existe en localStorage
+    if (user) {
+        // Obtener el _id
+        userId = user._id;
+        //console.log('User ID:', userId);
+    } else {
+        console.log('No se encontró el usuario en localStorage.');
+    }
+    
+
+    //console.log( products);
 
     return (
         <section className="py-5 bg-light">
@@ -14,7 +27,7 @@ const ProductsHome = ({ products }) => {
 
                     {products.map((product) => (
                         <Link to={`/products/${product._id}`} key={product._id} style={{ textDecoration: "none", color: "inherit" }}>
-                            <ProductCard product={product} />
+                            <ProductCard product={product} userId={userId} />
                         </Link>
                     ))}
 
