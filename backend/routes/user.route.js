@@ -9,7 +9,8 @@ import { getUserLogin,
     addFavorite,
     removeFavorite,
     getCart,
-    updateCart
+    updateCart,
+    addToCart
  } from "../controller/user.controller.js";
 
 const router = express.Router()
@@ -41,5 +42,7 @@ router.post("/favorites/remove", removeFavorite);
 router.post("/cart", getCart);
 
 router.patch("/cart/update", updateCart);
+
+router.post("/cart/add", addToCart);
 
 export default router

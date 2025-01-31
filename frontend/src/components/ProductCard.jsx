@@ -1,13 +1,14 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import useFavorites from '../hooks/useFavorites';
 import { IconContext } from "react-icons/lib";
+import useCart from "../hooks/useCart";
 
 
 export default function ProductCard({ product, userId }) {
-    //console.log(userId)
 
     const { toggleFavorite, isProductFavorite } = useFavorites(userId);
     const isFavorite = isProductFavorite(product._id);
+    const { addProductToCart } = useCart(userId);
 
     const handleFavoriteToggle = () => {
         //console.log(userId, product._id)
@@ -41,6 +42,7 @@ export default function ProductCard({ product, userId }) {
                     <button className="btn btn-outline-dark w-100"
                         onClick={(event) => {
                             event.preventDefault()
+                            addProductToCart(product._id, product.price, product.name, product.image);
                         }}
                     >
                         Add to Cart

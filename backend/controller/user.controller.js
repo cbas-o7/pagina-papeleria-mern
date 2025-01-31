@@ -247,15 +247,15 @@ export const updateCart = async (req, res) => {
 
 export const addToCart = async (req, res) => {
     try {
-        const { userId, productId, price } = req.body;
-
+        const { userId, productId, price, name, image } = req.body;
+        console.log({ userId, productId, price, name, image })
         let cart = await Cart.findOne({ userId });
-
+        //console.log(cart)
         if (!cart) {
             // Si no existe el carrito, creamos uno nuevo
             cart = new Cart({
                 userId,
-                products: [{ productId, quantity: 1, unitPrice: price }],
+                products: [{ productId, quantity: 1, unitPrice: price, name, image}],
             });
         } else {
             const existingProduct = cart.products.find(
@@ -265,13 +265,14 @@ export const addToCart = async (req, res) => {
             if (existingProduct) {
                 existingProduct.quantity += 1;
             } else {
-                cart.products.push({ productId, quantity: 1, unitPrice: price });
+                cart.products.push({ productId, quantity: 1, unitPrice: price, name, image});
             }
         }
 
         await cart.save();
         res.status(200).json({ success: true, cart });
     } catch (error) {
-        res.status(500).json({ success: false, message: "Error al agregar al carrito" });
+        console.log(error)
+        res.status(500).json({ success: false, message: "Error al agregar al carrito", error  });
     }
 };

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 // API_URL Desarrollo
-//const API_URL = `http://localhost:5000`
+const API_URL = `http://localhost:5000`
 
 // API_URL Producccion 
-const API_URL = "https://8xzt8k3b-5000.usw3.devtunnels.ms"
+//const API_URL = "https://8xzt8k3b-5000.usw3.devtunnels.ms"
 
 export const signup = async (newUser) => {
   try {
@@ -48,7 +48,7 @@ export const getRandomProducts = async () => {
   }
 };
 
-export const getProductByID = async ({id}) => {
+export const getProductByID = async ({ id }) => {
   try {
     //console.log(`${API_URL}/products/${id}`)
 
@@ -63,7 +63,7 @@ export const getProductByID = async ({id}) => {
 export const getOrdersByUserId = async (userId) => {
   try {
     const response = await axios.post(`${API_URL}/account`, { userId });
-    return response.data.data; 
+    return response.data.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Error en la solicitud");
   }
@@ -72,7 +72,7 @@ export const getOrdersByUserId = async (userId) => {
 export const getFavoritesByUser = async (userId) => {
   try {
     //console.log(userId)
-    const response = await axios.post(`${API_URL}/favorites`, {userId});
+    const response = await axios.post(`${API_URL}/favorites`, { userId });
     //
     return response.data.data;
   } catch (error) {
@@ -80,7 +80,7 @@ export const getFavoritesByUser = async (userId) => {
   }
 };
 
-export const addFavorite  = async (productId, userId) => {
+export const addFavorite = async (productId, userId) => {
   try {
     //console.log(userId)
     await axios.post(`${API_URL}/favorites/add`, { userId, productId });
@@ -102,7 +102,7 @@ export const removeFavorite = async (userId, productId) => {
 export const getCartByUserId = async (userId) => {
   try {
     const response = await axios.post(`${API_URL}/cart`, { userId });
-    return response.data.data; 
+    return response.data.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Error en la solicitud");
   }
@@ -118,6 +118,24 @@ export const updateCartQuantity = async (userId, productId, quantity) => {
     return response.data.cart; // Devolvemos el carrito actualizado
   } catch (error) {
     console.error("Error al actualizar el carrito:", error);
+    return null;
+  }
+};
+
+export const addToCart = async ( userId, productId, price, name, image ) => {
+  const numericPrice = parseFloat(price.replace('$', ''));
+
+  try {
+    const response = await axios.post(`${API_URL}/cart/add`, {
+      userId,
+      productId,
+      price: numericPrice,
+      name,
+      image,
+    });
+    return response.data.cart;
+  } catch (error) {
+    console.error("Error al agregar al carrito:", error);
     return null;
   }
 };

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getCartByUserId, updateCartQuantity } from "../services/api";
+import { getCartByUserId, updateCartQuantity, addToCart } from "../services/api";
 
 export default function useCart(userId) {
     const [cartItems, setCartItems] = useState([]);
@@ -27,5 +27,10 @@ export default function useCart(userId) {
         }
     };
 
-    return { cartItems, setCartItems, updateQuantity };
+    const addProductToCart = async (productId, price, name, image) => {
+        const updatedCart = await addToCart(userId, productId, price, name, image);
+        if (updatedCart) setCartItems(updatedCart.products);
+      };
+
+    return { cartItems, setCartItems, updateQuantity, addProductToCart };
 }
