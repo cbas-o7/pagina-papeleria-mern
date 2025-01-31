@@ -1,5 +1,4 @@
 import { FaHeart, FaRegHeart } from "react-icons/fa";
-//import { useHistory } from "react-router-dom";
 import useFavorites from '../hooks/useFavorites';
 import { IconContext } from "react-icons/lib";
 

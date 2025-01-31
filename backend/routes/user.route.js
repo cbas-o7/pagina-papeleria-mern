@@ -7,7 +7,9 @@ import { getUserLogin,
     getOrdersByUserId,
     getFavorites,
     addFavorite,
-    removeFavorite
+    removeFavorite,
+    getCart,
+    updateCart
  } from "../controller/user.controller.js";
 
 const router = express.Router()
@@ -35,5 +37,9 @@ router.post("/favorites", getFavorites);
 router.post("/favorites/add", addFavorite);
 
 router.post("/favorites/remove", removeFavorite);
+
+router.post("/cart", getCart);
+
+router.patch("/cart/update", updateCart);
 
 export default router

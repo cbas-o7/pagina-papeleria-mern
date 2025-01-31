@@ -3,6 +3,7 @@ import Product from "../models/product.js";
 import Category from "../models/category.js";
 import Order from "../models/order.js";
 import Favorite from "../models/favorite.js";
+import Cart from "../models/cart.js";
 
 export const getUserLogin = async (req, res) => {
     const { email, password } = req.body; // Recoge email y password de los parámetros de consulta
@@ -192,5 +193,85 @@ export const getFavorites = async (req, res) => {
         res.status(200).json({ success: true, data: favorite.favoriteProducts });
     } catch (err) {
         res.status(500).json({ success: false, message: 'Error al obtener los favoritos', error: err.message });
+    }
+};
+
+
+export const getCart = async (req, res) => {
+    const { userId } = req.body;
+
+    try {
+        const cart = await Cart.findOne({ userId }).populate('products.productId');
+
+        if (!cart) {
+            return res.status(404).json({ success: false, message: 'No se encontro carrito para este usuario' });
+        }
+
+        res.status(200).json({ success: true, data: cart.products });
+    } catch (err) {
+        res.status(500).json({ success: false, message: 'Error al obtener el carrito ', error: err.message });
+    }
+};
+
+export const updateCart = async (req, res) => {
+    try {
+        const { userId, productId, quantity } = req.body;
+
+        if (quantity === 0) {
+            // Si la cantidad es 0, eliminamos el producto del carrito
+            const updatedCart = await Cart.findOneAndUpdate(
+                { userId },
+                { $pull: { products: { productId } } },
+                { new: true }
+            );
+
+            return res.status(200).json({
+                success: true,
+                message: "Producto eliminado del carrito",
+                cart: updatedCart,
+            });
+        }
+
+        // Si la cantidad es mayor a 0, actualizamos normalmente
+        const updatedCart = await Cart.findOneAndUpdate(
+            { userId, "products.productId": productId },
+            { $set: { "products.$.quantity": quantity } },
+            { new: true }
+        );
+
+        res.status(200).json({ success: true, message: "Carrito actualizado", cart: updatedCart });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error al actualizar el carrito" });
+    }
+};
+
+export const addToCart = async (req, res) => {
+    try {
+        const { userId, productId, price } = req.body;
+
+        let cart = await Cart.findOne({ userId });
+
+        if (!cart) {
+            // Si no existe el carrito, creamos uno nuevo
+            cart = new Cart({
+                userId,
+                products: [{ productId, quantity: 1, unitPrice: price }],
+            });
+        } else {
+            const existingProduct = cart.products.find(
+                (p) => p.productId.toString() === productId
+            );
+
+            if (existingProduct) {
+                existingProduct.quantity += 1;
+            } else {
+                cart.products.push({ productId, quantity: 1, unitPrice: price });
+            }
+        }
+
+        await cart.save();
+        res.status(200).json({ success: true, cart });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error al agregar al carrito" });
     }
 };

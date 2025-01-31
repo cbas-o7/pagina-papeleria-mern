@@ -1,25 +1,17 @@
 
-import { useState } from "react"
-
-const img = 'https://flowbite.com/docs/images/examples/image-1@2x.jpg'
-
-const initialCartItems = [
-  { id: 1, name: "Luxury Notebook", price: 24.99, quantity: 2, image: img },
-  { id: 2, name: "Fountain Pen Set", price: 49.99, quantity: 1, image: img },
-]
+import { useState, useEffect } from "react"
+import useCart from "../hooks/useCart"
 
 export default function ShoppingCart() {
-  const [cartItems, setCartItems] = useState(initialCartItems)
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userId = user ? user._id : "";
 
-  const updateQuantity = (id, change) => {
-    setCartItems((items) =>
-      items
-        .map((item) => (item.id === id ? { ...item, quantity: Math.max(0, item.quantity + change) } : item))
-        .filter((item) => item.quantity > 0),
-    )
-  }
 
-  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const { cartItems, updateQuantity } = useCart(userId);
+
+  // Calcular total
+  const total = cartItems.reduce((sum, item) => sum + item.unitPrice * item.quantity, 0);
+
 
   return (
     <div className="container py-5">
@@ -38,7 +30,7 @@ export default function ShoppingCart() {
               </thead>
               <tbody>
                 {cartItems.map((item) => (
-                  <tr key={item.id}>
+                  <tr key={item.productId}>
                     <td>
                       <div className="d-flex align-items-center">
                         <img
@@ -50,22 +42,25 @@ export default function ShoppingCart() {
                         {item.name}
                       </div>
                     </td>
-                    <td>${item.price.toFixed(2)}</td>
+                    <td>${item.unitPrice.toFixed(2)}</td>
                     <td>
                       <div className="d-flex align-items-center">
                         <button
-                          onClick={() => updateQuantity(item.id, -1)}
+                          onClick={() => updateQuantity(item.productId, -1)}
                           className="btn btn-sm btn-outline-secondary"
                         >
                           -
                         </button>
                         <span className="mx-2">{item.quantity}</span>
-                        <button onClick={() => updateQuantity(item.id, 1)} className="btn btn-sm btn-outline-secondary">
+                        <button
+                          onClick={() => updateQuantity(item.productId, 1)}
+                          className="btn btn-sm btn-outline-secondary"
+                        >
                           +
                         </button>
                       </div>
                     </td>
-                    <td>${(item.price * item.quantity).toFixed(2)}</td>
+                    <td>${(item.unitPrice * item.quantity).toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>
