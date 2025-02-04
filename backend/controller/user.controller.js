@@ -28,7 +28,14 @@ export const getUserLogin = async (req, res) => {
         }
 
         // Si todo es correcto, devolver datos del usuario
-        res.status(200).json({ success: true, data: user });
+        res.status(200).json({
+            success: true,
+            data: {
+                _id: user._id,
+                email: user.email,
+                role: user.rol, // Enviar el rol en la respuesta
+            }
+        });
     } catch (error) {
         console.error(`Error al autenticar usuario: ${error.message}`);
         res.status(500).json({ success: false, message: 'Error en el servidor' });
@@ -272,7 +279,7 @@ export const addToCart = async (req, res) => {
         await cart.save();
         res.status(200).json({ success: true, cart });
     } catch (error) {
-        console.log(error)
+        //console.log(error)
         res.status(500).json({ success: false, message: "Error al agregar al carrito", error  });
     }
 };

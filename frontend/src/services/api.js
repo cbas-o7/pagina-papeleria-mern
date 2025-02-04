@@ -19,11 +19,25 @@ export const getUser = async (user) => {
   try {
     const response = await axios.post(`${API_URL}/login`, user);
 
-    console.log('Usuario autenticado:', response.data);
-    // Guardar datos del usuario en localStorage o context (opcional)
-    localStorage.setItem('user', JSON.stringify(response.data.data));
+    
+    if (response.data.success) {
+      const userData = response.data.data;
+      console.log('Usuario autenticado:', userData);
+      // Si el usuario es normal, guardamos sus datos en localStorage
+      if (userData.role === "user") {
+        localStorage.setItem("user", JSON.stringify(userData));
+      }
 
-    return response.data; // Retorna la respuesta del servidor
+      // Verifica si el usuario es admin o no
+      if (userData.role === "admin") {
+        sessionStorage.setItem("admin", JSON.stringify(userData)); // Guarda solo en sessionStorage
+      } else {
+        localStorage.setItem("user", JSON.stringify(userData)); // Guarda solo en localStorage si es user
+      }
+
+      return userData; // Retornamos los datos del usuario
+    }
+
   } catch (error) {
     throw new Error(error.response?.data?.message || "Error en la solicitud");
   }
@@ -122,7 +136,7 @@ export const updateCartQuantity = async (userId, productId, quantity) => {
   }
 };
 
-export const addToCart = async ( userId, productId, price, name, image ) => {
+export const addToCart = async (userId, productId, price, name, image) => {
   const numericPrice = parseFloat(price.replace('$', ''));
 
   try {

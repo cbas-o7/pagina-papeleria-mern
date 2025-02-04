@@ -12,7 +12,7 @@ function Login() {
   })
   //const [errors, setrErrors] = useState({})
   const navigate = useNavigate();
-  
+
   const handleInput = (e) => {
     setUser(prev => ({ ...prev, [e.target.name]: e.target.value }))
   }
@@ -21,11 +21,16 @@ function Login() {
     event.preventDefault()
 
     try {
-      const response = await getUser(user); // Espera la respuesta de login()
-      console.log(response); // Puedes depurar la respuesta del servidor
-      navigate("/"); // Redirige después de una respuesta exitosa
+
+      const userData = await getUser(user);
+      console.log("login redireccionando: ", userData)
+      if (userData.role === "admin") {
+        navigate("/adminhome"); // Si es admin, lo enviamos a /adminhome
+      } else {
+        navigate("/"); // Si es user, lo enviamos a /
+      }
     } catch (error) {
-      console.error("Error al registrar el usuario:", error);
+      console.error("Error al iniciar sesion: ", error);
     }
   }
 
