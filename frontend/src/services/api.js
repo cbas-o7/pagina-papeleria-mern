@@ -153,3 +153,85 @@ export const addToCart = async (userId, productId, price, name, image) => {
     return null;
   }
 };
+
+
+export const addProduct = async (product) => {
+  //console.log(product)
+
+  try {
+    const response = await axios.post(`${API_URL}/product/add`, product, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data; // Devuelve la respuesta del backend
+  } catch (error) {
+    console.error("Error al agregar producto:", error);
+    throw new Error(error.response?.data?.message || "Error en la solicitud");
+  }
+}
+
+/* export const deleteProduct = async (product) => {
+  //console.log(product)
+
+  try {
+    const response = await axios.post(`${API_URL}/product/add`, product, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data; // Devuelve la respuesta del backend
+  } catch (error) {
+    console.error("Error al agregar producto:", error);
+    throw new Error(error.response?.data?.message || "Error en la solicitud");
+  }
+} */
+
+export const updateProduct = async (id, formData) => {
+
+  try {
+    const response = await axios.post(`${API_URL}/product/add/${id}`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    return response.data; // Devuelve la respuesta del backend
+
+  } catch (error) {
+    console.error("Error al agregar producto:", error);
+    throw new Error(error.response?.data?.message || "Error en la solicitud");
+  }
+}
+
+export const deleteProduct = async (id) => {
+
+  try {
+    const response = await axios.post(`${API_URL}/product/delete/${id}`);
+    return response.data; // Devuelve la respuesta del backend
+
+  } catch (error) {
+    console.error("Error al agregar producto:", error);
+    throw new Error(error.response?.data?.message || "Error en la solicitud");
+  }
+}
+
+
+//
+// Agregar nueva categoría
+export const addCategory = async (categoryName) => {
+  const response = await axios.post(`${API_URL}/category/add`, { name: categoryName });
+  return response.data;
+};
+
+// Editar categoría
+export const updateCategory = async (categoryId, newName) => {
+  await axios.put(`${API_URL}/category/edit/${categoryId}`, { name: newName });
+};
+
+// Eliminar categoría
+export const deleteCategory = async (categoryId) => {
+  await axios.delete(`${API_URL}/category/delete/${categoryId}`);
+};
+
+export const getCategories = async () => {
+  const response = await axios.get(`${API_URL}/categories`);
+  return response.data;
+};

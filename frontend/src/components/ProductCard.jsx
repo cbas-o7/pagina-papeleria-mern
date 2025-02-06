@@ -20,7 +20,10 @@ export default function ProductCard({ product, userId }) {
         <div className="col">
             <div className="card h-100 shadow-sm">
                 <div className="position-relative">
-                    <img src={product.image || "/placeholder.svg"} alt={product.name} className="card-img-top" />
+                    <img src={product.image || "/placeholder.svg"}
+                        alt={product.name}
+                        className="card-img-top object-fit-cover"
+                        style={{ height: "200px" }} />
                     <button
                         className="btn btn-sm btn-outline-secondary position-absolute top-0 end-0 m-2"
                         onClick={(event) => {

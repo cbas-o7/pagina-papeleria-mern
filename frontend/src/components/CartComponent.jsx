@@ -36,7 +36,7 @@ export default function ShoppingCart() {
                         <img
                           src={item.image || "/placeholder.svg"}
                           alt={item.name}
-                          className="me-3 rounded"
+                          className="object-fit-cover me-3 rounded "
                           style={{ width: "100px", height: "auto" }}
                         />
                         {item.name}

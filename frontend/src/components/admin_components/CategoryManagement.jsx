@@ -1,68 +1,69 @@
 "use client"
 
 import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import useAdminCategories from "../../hooks/useAdminCategories";
 
-const initialCategories = ["Notebooks", "Writing Instruments", "Organizers", "Art Supplies"]
 
-export default function CategoryManagement() {
-    const [categories, setCategories] = useState(initialCategories)
+//const initialCategories = ["Notebooks", "Writing Instruments", "Organizers", "Art Supplies"]
+
+export default function CategoryManagement({ fetchCategories }) {
+    const { categories, handleAddCategory, handleEditCategory, handleDeleteCategory } = useAdminCategories();
+
     const [newCategory, setNewCategory] = useState("")
     const [editingCategory, setEditingCategory] = useState(null)
+    const [editedValues, setEditedValues] = useState({});
 
-    const handleAddCategory = (e) => {
-        e.preventDefault()
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         if (newCategory.trim()) {
-            setCategories([...categories, newCategory.trim()])
-            setNewCategory("")
+            fetchCategories()
+            await handleAddCategory(newCategory.trim());
+            setNewCategory("");
         }
-    }
-
-    const handleEditCategory = (index, newName) => {
-        const updatedCategories = [...categories]
-        updatedCategories[index] = newName
-        setCategories(updatedCategories)
-        setEditingCategory(null)
-    }
-
-    const handleDeleteCategory = (index) => {
-        const updatedCategories = categories.filter((_, i) => i !== index)
-        setCategories(updatedCategories)
-    }
+    };
 
     return (
         <div>
             <h3 className="mb-3">Categories</h3>
-            <ul className="list-group mb-3">
-                {categories.map((category, index) => (
-                    <div
-                        key={index}
-                        className="category-item mb-2 p-2 bg-light rounded d-flex justify-content-between align-items-center"
-                    >
-                        {editingCategory === index ? (
-                            <input
-                                type="text"
-                                className="form-control form-control-sm me-2"
-                                value={category}
-                                onChange={(e) => handleEditCategory(index, e.target.value)}
-                                onBlur={() => setEditingCategory(null)}
-                                autoFocus
-                            />
-                        ) : (
-                            <span>{category}</span>
-                        )}
-                        <div>
-                            <button className="btn btn-sm btn-outline-primary me-2" onClick={() => setEditingCategory(index)}>
-                                <FaEdit />
-                            </button>
-                            <button className="btn btn-sm btn-outline-danger" onClick={() => handleDeleteCategory(index)}>
-                                <FaRegTrashAlt />
-                            </button>
+            {categories.length === 0 ? (
+                <p>No categories found.</p>
+            ) : (
+                <ul className="list-group mb-3">
+                    {categories.map((category) => (
+                        <div
+                            key={category._id}
+                            className="category-item mb-2 p-2 bg-light rounded d-flex justify-content-between align-items-center"
+                        >
+                            {editingCategory === category._id ? (
+                                <input
+                                    type="text"
+                                    className="form-control form-control-sm me-2"
+                                    value={editedValues[category._id] || category.name}
+                                    onChange={(e) => setEditedValues({ ...editedValues, [category._id]: e.target.value })}
+                                    onBlur={() => {
+                                        handleEditCategory(category._id, editedValues[category._id] || category.name);
+                                        setEditingCategory(null);
+                                        setEditedValues((prev) => ({ ...prev, [category._id]: "" })); 
+                                    }}
+                                    autoFocus
+                                />
+                            ) : (
+                                <span>{category.name}</span>
+                            )}
+                            <div className="d-flex flex-row-reverse">
+                                <button className="btn btn-sm btn-outline-danger me-1" onClick={() => handleDeleteCategory(category._id)}>
+                                    <FaRegTrashAlt />
+                                </button>
+                                <button className="btn btn-sm btn-outline-primary me-2" onClick={() => setEditingCategory(category._id)}>
+                                    <FaEdit />
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                ))}
-            </ul>
-            <form onSubmit={handleAddCategory}>
+                    ))}
+                </ul>
+            )}
+            <form onSubmit={handleSubmit}>
                 <div className="input-group mb-3">
                     <input
                         type="text"

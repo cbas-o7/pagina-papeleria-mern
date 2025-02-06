@@ -4,7 +4,7 @@ import ProductCard from "./ProductCard"
 import { Link } from "react-router-dom"
 
 
-const img = 'https://flowbite.com/docs/images/examples/image-1@2x.jpg'
+/* const img = 'https://flowbite.com/docs/images/examples/image-1@2x.jpg'
 
 const favoriteProducts = [
   {
@@ -28,7 +28,7 @@ const favoriteProducts = [
     image: img,
     category: "Organizers",
   },
-]
+] */
 
 export default function FavoriteProducts() {
   const { products } = useProducts()

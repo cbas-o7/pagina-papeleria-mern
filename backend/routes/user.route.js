@@ -10,7 +10,14 @@ import { getUserLogin,
     removeFavorite,
     getCart,
     updateCart,
-    addToCart
+    addToCart,
+    addProduct,
+    updateProduct,
+    deleteProduct,
+    addCategory,
+    editCategory,
+    deleteCategory,
+    getCategories
  } from "../controller/user.controller.js";
 
 const router = express.Router()
@@ -44,5 +51,21 @@ router.post("/cart", getCart);
 router.patch("/cart/update", updateCart);
 
 router.post("/cart/add", addToCart);
+
+
+
+router.post("/product/add", addProduct);
+
+router.post("/product/add/:id", updateProduct)
+
+router.post("/product/delete/:id", deleteProduct)
+//
+router.post("/category/add", addCategory)
+
+router.put("/category/edit/:id", editCategory)
+
+router.delete("/category/delete/:id", deleteCategory)
+
+router.get("/categories", getCategories)
 
 export default router

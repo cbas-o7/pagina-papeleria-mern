@@ -4,6 +4,11 @@ import Category from "../models/category.js";
 import Order from "../models/order.js";
 import Favorite from "../models/favorite.js";
 import Cart from "../models/cart.js";
+import {
+    addProductToFirebase,
+    deleteImageFromFirebase
+} from "../firebase.js";
+import mongoose from "mongoose";
 
 export const getUserLogin = async (req, res) => {
     const { email, password } = req.body; // Recoge email y password de los parámetros de consulta
@@ -262,7 +267,7 @@ export const addToCart = async (req, res) => {
             // Si no existe el carrito, creamos uno nuevo
             cart = new Cart({
                 userId,
-                products: [{ productId, quantity: 1, unitPrice: price, name, image}],
+                products: [{ productId, quantity: 1, unitPrice: price, name, image }],
             });
         } else {
             const existingProduct = cart.products.find(
@@ -272,7 +277,7 @@ export const addToCart = async (req, res) => {
             if (existingProduct) {
                 existingProduct.quantity += 1;
             } else {
-                cart.products.push({ productId, quantity: 1, unitPrice: price, name, image});
+                cart.products.push({ productId, quantity: 1, unitPrice: price, name, image });
             }
         }
 
@@ -280,6 +285,147 @@ export const addToCart = async (req, res) => {
         res.status(200).json({ success: true, cart });
     } catch (error) {
         //console.log(error)
-        res.status(500).json({ success: false, message: "Error al agregar al carrito", error  });
+        res.status(500).json({ success: false, message: "Error al agregar al carrito", error });
+    }
+};
+
+
+
+export const addProduct = async (req, res) => {
+
+    const { name, price, category, description } = req.body;
+    const file = req.files?.image;
+
+    const idProduct = new mongoose.Types.ObjectId();
+
+    if (!file) {
+        return res.status(400).json({ message: "No se subió ninguna imagen." });
+    }
+
+
+    try {
+        // Llama a la función para subir la imagen a Firebase Storage y obtener la URL
+        const imageUrl = await addProductToFirebase(idProduct, file);
+
+        // Crea un nuevo producto y guárdalo en la base de datos
+        const newProduct = new Product({
+            _id: idProduct,
+            name,
+            price: `$${parseFloat(price).toFixed(2)}`,
+            description,
+            image: imageUrl,
+            category,
+        });
+
+        await newProduct.save();
+
+        res.status(200).json({ success: true, product: newProduct });
+    } catch (error) {
+        console.error("Error al agregar producto:", error);
+
+        // En caso de error, eliminamos la imagen de Firebase
+        await deleteImageFromFirebase(idProduct);
+
+
+        // Responder con el error
+        res.status(500).json({ success: false, message: 'Error al agregar producto', error: error.message });
+    }
+};
+
+
+export const updateProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { name, price, description, category } = req.body;
+        const file = req.files?.image;
+
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: "Producto no encontrado" });
+        }
+
+        let imageUrl = product.image; // Mantiene la imagen anterior
+        console.log("imagen: ", file)
+        if (file) {
+            // Si hay una nueva imagen, eliminar la anterior y subir la nueva
+            console.log("entre en cambiar imagen jeje")
+            //await deleteImageFromFirebase(id);
+            imageUrl = await addProductToFirebase(id, file);
+        }
+
+        product.name = name;
+        product.price = `$${parseFloat(price).toFixed(2)}`;
+        product.description = description;
+        product.category = category;
+        product.image = imageUrl; // Actualizar la imagen
+
+        await product.save();
+        res.status(200).json({ success: true, product });
+    } catch (error) {
+        console.error("Error al actualizar el producto:", error);
+        res.status(500).json({ success: false, message: "Error al actualizar el producto" });
+    }
+};
+
+export const deleteProduct = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const product = await Product.findById(id);
+        if (!product) {
+            return res.status(404).json({ message: "Producto no encontrado" });
+        }
+
+        // Eliminar el producto de la base de datos
+        await Product.findByIdAndDelete(id);
+
+        // Eliminar la imagen de Firebase Storage (si tiene una)
+        if (product.image) {
+            await deleteImageFromFirebase(product.image);
+        }
+
+
+        res.json({ message: "Producto eliminado correctamente" });
+    } catch (error) {
+        console.error("Error al eliminar el producto:", error);
+        res.status(500).json({ message: "Error eliminando el producto" });
+    }
+};
+
+
+export const addCategory = async (req, res) => {
+    try {
+        const newCategory = new Category({ name: req.body.name });
+        await newCategory.save();
+        res.json(newCategory);
+    } catch (err) {
+        res.status(500).json({ message: "Error adding category" });
+    }
+};
+
+export const editCategory = async (req, res) => {
+    try {
+        const updatedCategory = await Category.findByIdAndUpdate(req.params.id, { name: req.body.name }, { new: true });
+        res.json(updatedCategory);
+    } catch (err) {
+        res.status(500).json({ message: "Error updating category" });
+    }
+};
+
+export const deleteCategory = async (req, res) => {
+    try {
+        await Category.findByIdAndDelete(req.params.id);
+        res.json({ message: "Category deleted" });
+    } catch (err) {
+        res.status(500).json({ message: "Error deleting category" });
+    }
+};
+
+export const getCategories = async (req, res) => {
+    try {
+        const categories = await Category.find();
+        res.json(categories);
+    } catch (err) {
+        res.status(500).json({ message: "Error fetching categories" });
     }
 };
