@@ -5,7 +5,7 @@ import useAdminCategories from "../../hooks/useAdminCategories";
 import { addProduct, updateProduct } from "../../services/api";
 //const initialCategories = ["Notebooks", "Writing Instruments", "Organizers", "Art Supplies"]
 
-export default function ProductForm({ product, onClose, initialCategories }) {
+export default function ProductForm({ product, onClose, fetchProducts }) {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -15,7 +15,7 @@ export default function ProductForm({ product, onClose, initialCategories }) {
     currentImage: "",
   })
 
-  const { categories, setCategories } = useAdminCategories(initialCategories);
+  const { categories, setCategories } = useAdminCategories();
   
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export default function ProductForm({ product, onClose, initialCategories }) {
       setFormData({
         ...product,
         price: numericPrice,
-        currentImage: product.image, // Guardamos la URL actual
+        currentImage: `${product.image}?t=${new Date().getTime()}`, // Guardamos la URL actual
         image: null, // Reiniciamos la imagen
       });
     }
@@ -53,8 +53,8 @@ export default function ProductForm({ product, onClose, initialCategories }) {
         // Si no existe, creamos uno nuevo
         response = await addProduct(formData);
       }
-
-      console.log("Producto guardado:", response);
+      fetchProducts()
+      //console.log("Producto guardado:", response);
       onClose(); // Cierra el modal después de guardar
     } catch (error) {
       console.error("Error al guardar el producto:", error);
@@ -66,37 +66,37 @@ export default function ProductForm({ product, onClose, initialCategories }) {
       <div className="modal-dialog modal-lg" role="document">
         <div className="modal-content">
           <div className="modal-header">
-            <h5 className="modal-title">{product ? "Edit Product" : "Add New Product"}</h5>
+            <h5 className="modal-title">{product ? "Editar producto" : "Agregar Nuevo Producto"}</h5>
             <button type="button" className="btn-close" onClick={onClose}></button>
           </div>
           <div className="modal-body">
             <form onSubmit={handleSubmit}>
               <div className="mb-3">
-                <label htmlFor="name" className="form-label">Name</label>
+                <label htmlFor="name" className="form-label">Nombre del producto</label>
                 <input type="text" className="form-control" id="name" name="name" value={formData.name} onChange={handleChange} required />
               </div>
               <div className="mb-3">
-                <label htmlFor="price" className="form-label">Price</label>
+                <label htmlFor="price" className="form-label">Precio</label>
                 <div className="input-group">
                   <span className="input-group-text">$</span>
                   <input type="number" className="form-control" id="price" name="price" value={formData.price} onChange={handleChange} required />
                 </div>
               </div>
               <div className="mb-3">
-                <label htmlFor="category" className="form-label">Category</label>
+                <label htmlFor="category" className="form-label">Categoria</label>
                 <select className="form-select" id="category" name="category" value={formData.category} onChange={handleChange} required>
-                  <option value="">Select a category</option>
+                  <option value="">Selecciona una categoria</option>
                   {categories.map((category) => (
                     <option key={category._id} value={category.name}>{category.name}</option>
                   ))}
                 </select>
               </div>
               <div className="mb-3">
-                <label htmlFor="description" className="form-label">Description</label>
-                <textarea className="form-control" id="description" name="description" value={formData.description} onChange={handleChange} rows="3"></textarea>
+                <label htmlFor="description" className="form-label">Descripcion</label>
+                <textarea className="form-control" id="description" name="description" value={formData.description} onChange={handleChange} rows="3" required></textarea>
               </div>
               <div className="mb-3">
-                <label htmlFor="image" className="form-label">Product Image</label>
+                <label htmlFor="image" className="form-label">Imagen del producto</label>
                 <input type="file" className="form-control" id="image" name="image" onChange={handleChange} accept="image/*" />
                 {formData.currentImage && (
                   <div className="mt-2">

@@ -3,7 +3,8 @@
 import { FaEdit, FaRegTrashAlt } from "react-icons/fa";
 import { useState, useEffect } from "react"
 import useAdminCategories from "../../hooks/useAdminCategories";
-
+import Swal from "sweetalert2";
+import "./productManagement.css"
 
 //const initialCategories = ["Notebooks", "Writing Instruments", "Organizers", "Art Supplies"]
 
@@ -14,18 +15,32 @@ export default function CategoryManagement({ fetchCategories }) {
     const [editingCategory, setEditingCategory] = useState(null)
     const [editedValues, setEditedValues] = useState({});
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (newCategory.trim()) {
-            fetchCategories()
             await handleAddCategory(newCategory.trim());
-            setNewCategory("");
+            setNewCategory("")
+            fetchCategories()
         }
+    };
+
+    // Función para mostrar el popup si no se puede eliminar la categoría
+    const showPopup = (message) => {
+        Swal.fire({
+            title: "Atención",
+            text: message,
+            icon: "warning",
+            confirmButtonText: "Entendido",
+            confirmButtonColor:"#0d6efd",
+            customClass: {
+                confirmButton: "custom-confirm-button" // Clase personalizada
+            }
+        });
     };
 
     return (
         <div>
-            <h3 className="mb-3">Categories</h3>
             {categories.length === 0 ? (
                 <p>No categories found.</p>
             ) : (
@@ -42,9 +57,10 @@ export default function CategoryManagement({ fetchCategories }) {
                                     value={editedValues[category._id] || category.name}
                                     onChange={(e) => setEditedValues({ ...editedValues, [category._id]: e.target.value })}
                                     onBlur={() => {
-                                        handleEditCategory(category._id, editedValues[category._id] || category.name);
+                                        handleEditCategory(category._id, editedValues[category._id] || category.name, fetchCategories);
+                                        
                                         setEditingCategory(null);
-                                        setEditedValues((prev) => ({ ...prev, [category._id]: "" })); 
+                                        setEditedValues((prev) => ({ ...prev, [category._id]: "" }));
                                     }}
                                     autoFocus
                                 />
@@ -52,10 +68,16 @@ export default function CategoryManagement({ fetchCategories }) {
                                 <span>{category.name}</span>
                             )}
                             <div className="d-flex flex-row-reverse">
-                                <button className="btn btn-sm btn-outline-danger me-1" onClick={() => handleDeleteCategory(category._id)}>
+                                <button
+                                    className="btn btn-sm btn-outline-danger me-1"
+                                    onClick={() => handleDeleteCategory(category._id, category.name, showPopup)}
+                                >
                                     <FaRegTrashAlt />
                                 </button>
-                                <button className="btn btn-sm btn-outline-primary me-2" onClick={() => setEditingCategory(category._id)}>
+                                <button
+                                    className="btn btn-sm btn-outline-primary me-2"
+                                    onClick={() => setEditingCategory(category._id)}
+                                >
                                     <FaEdit />
                                 </button>
                             </div>
@@ -68,12 +90,12 @@ export default function CategoryManagement({ fetchCategories }) {
                     <input
                         type="text"
                         className="form-control"
-                        placeholder="New category name"
+                        placeholder="Nombre de nueva categoria"
                         value={newCategory}
                         onChange={(e) => setNewCategory(e.target.value)}
                     />
                     <button type="submit" className="btn btn-outline-primary">
-                        Add
+                        Agregar
                     </button>
                 </div>
             </form>

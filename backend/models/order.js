@@ -13,7 +13,7 @@ const orderSchema = new mongoose.Schema({
         },
     ],
     total: { type: Number, required: true },
-    estado: { type: String, enum: ["Por entregar", "Entregado"], default: "Por entregar" },
+    estado: { type: String, enum: ["Por entregar", "Entregado", "Cancelado"], default: "Por entregar" },
     fechaCreacion: { type: Date, default: Date.now },
 });
 

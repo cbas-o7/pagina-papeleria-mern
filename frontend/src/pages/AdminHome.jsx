@@ -5,7 +5,7 @@ import { useState } from "react"
 import ProductManagement from "../components/admin_components/ProductManagement"
 import OrderManagement from "../components/admin_components/OrderManagement"
 import StoreInformation from "../components/admin_components/StoreInformation"
-import "../components/admin_components/ProductManagement.css"
+import "../components/admin_components/productManagement.css"
 
 export default function AdminHome() {
     const [activeTab, setActiveTab] = useState("products")
@@ -33,7 +33,7 @@ export default function AdminHome() {
                                         setSidebarOpen(false)
                                     }}
                                 >
-                                    Product Management
+                                    Gestión de productos
                                 </a>
                             </li>
                             <li className="nav-item">
@@ -45,7 +45,7 @@ export default function AdminHome() {
                                         setSidebarOpen(false)
                                     }}
                                 >
-                                    Order Management
+                                    Gestión de pedidos
                                 </a>
                             </li>
                             <li className="nav-item">
@@ -57,7 +57,7 @@ export default function AdminHome() {
                                         setSidebarOpen(false)
                                     }}
                                 >
-                                    Store Information
+                                    Información de la tienda
                                 </a>
                             </li>
                         </ul>

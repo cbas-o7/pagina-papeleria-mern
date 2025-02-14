@@ -1,34 +1,43 @@
 import React, { useState } from "react";
 import { SlArrowUp, SlArrowDown } from "react-icons/sl";
+import { MdCancel } from "react-icons/md";
 import { useOrders } from "../hooks/useOrders";
-
+import Swal from "sweetalert2";
 
 export default function AccountAndOrders() {
   const [openOrder, setOpenOrder] = useState(null); // Track which order is open
 
-  // Obtener el documento almacenado en localStorage con la clave 'user'
-  const user = JSON.parse(localStorage.getItem('user'));
-  var userId = ""
-  // Verificar si el usuario existe en localStorage
-  if (user) {
-    // Obtener el _id
-    userId = user._id;
-    //console.log('User ID:', userId);
-  } else {
-    console.log('No se encontró el usuario en localStorage.');
-  }
 
-  
-  const { orders } = useOrders("679223f140fed36595b74944")
-  //console.log(orders)
+  const user = JSON.parse(localStorage.getItem('user'));
+
+  const userId = user ? user._id : "";
+
+
+  const { orders, handleCancelOrder } = useOrders(userId)
 
   const toggleOrder = (orderId) => {
     setOpenOrder(openOrder === orderId ? null : orderId);
   };
 
+  const confirmCancelOrder = (orderId) => {
+    Swal.fire({
+      title: "¿Cancelar pedido?",
+      text: "Si cancelas este pedido, no podrás recuperarlo.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, cancelar",
+      cancelButtonText: "No, mantener",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handleCancelOrder(orderId);
+        Swal.fire("Cancelado", "Tu pedido ha sido cancelado.", "success");
+      }
+    });
+  };
+
   return (
     <div className="container mt-5">
-      <h1 className="mb-4">Your Account</h1>
+      <h1 className="mb-4">Tu cuenta</h1>
 
       <div className="card mb-4">
         <div className="card-body d-flex align-items-center">
@@ -36,18 +45,31 @@ export default function AccountAndOrders() {
             <p className="mb-1 fw-bold">{user.name}</p>
             <p className="mb-1 text-muted">{user.email}</p>
           </div>
-          <button className="btn btn-primary ms-auto">Edit Profile</button>
+          <button className="btn btn-primary ms-auto">Editar Perfil</button>
         </div>
       </div>
 
-      <h2 className="mb-4">Your Orders</h2>
+      <h2 className="mb-4">Tus Pedidos</h2>
       {orders.map((order) => (
         <div key={order._id} className="card mb-3">
           <div className="card-header d-flex justify-content-between align-items-center">
             <div>
-              <h5 className="mb-0">Order #{order._id}</h5>
+              <h5 className="mb-0">Pedido #{order._id}</h5>
               <small className="text-muted">{order.fechaCreacion}</small>
             </div>
+
+            {order.estado === "Por entregar" && (
+              <button
+                className="btn btn-danger btn-sm pb-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  confirmCancelOrder(order._id);
+                }}
+              >
+                <MdCancel />
+              </button>
+            )}
+
             <button
               className="btn btn-link text-dark"
               onClick={() => toggleOrder(order._id)}

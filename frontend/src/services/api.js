@@ -4,7 +4,7 @@ import axios from "axios";
 const API_URL = `http://localhost:5000`
 
 // API_URL Producccion 
-//const API_URL = "https://8xzt8k3b-5000.usw3.devtunnels.ms"
+//const API_URL = "https://8xzt8k3b-5000.usw3.devtunnels.ms/"
 
 export const signup = async (newUser) => {
   try {
@@ -19,7 +19,7 @@ export const getUser = async (user) => {
   try {
     const response = await axios.post(`${API_URL}/login`, user);
 
-    
+
     if (response.data.success) {
       const userData = response.data.data;
       console.log('Usuario autenticado:', userData);
@@ -154,6 +154,44 @@ export const addToCart = async (userId, productId, price, name, image) => {
   }
 };
 
+export const checkoutOrder = async (orderData) => {
+  //const numericPrice = parseFloat(price.replace('$', ''));
+
+  try {
+    const response = await axios.post(`${API_URL}/checkout`, orderData);
+    return response.data;
+  } catch (error) {
+    console.error("Error al agregar al carrito:", error);
+    return { success: false };
+  }
+};
+
+export const getPendingOrdersByUserId = async (userId) => {
+  try {
+    //console.log(userId)
+    const response = await axios.get(`${API_URL}/orders/pending`, { params: { userId }, });
+    return response.data.data || [];
+    //console.log(response)
+  } catch (error) {
+    console.error("Error obteniendo órdenes pendientes:", error);
+    return [];
+  }
+};
+
+export const cancelOrder = async (orderId) => {
+  try {
+    const response = await axios.delete(`${API_URL}/orders/cancel/${orderId}`, { orderId });
+    return response.data;
+  } catch (error) {
+    console.error("Error cancelando orden:", error);
+    throw new Error(error.response?.data?.message || "Error en la solicitud");
+  }
+};
+
+
+
+
+
 
 export const addProduct = async (product) => {
   //console.log(product)
@@ -201,10 +239,11 @@ export const updateProduct = async (id, formData) => {
   }
 }
 
-export const deleteProduct = async (id) => {
+export const deleteProduct = async (id, fetchProducts) => {
 
   try {
     const response = await axios.post(`${API_URL}/product/delete/${id}`);
+    fetchProducts()
     return response.data; // Devuelve la respuesta del backend
 
   } catch (error) {
@@ -234,4 +273,24 @@ export const deleteCategory = async (categoryId) => {
 export const getCategories = async () => {
   const response = await axios.get(`${API_URL}/categories`);
   return response.data;
+};
+
+export const getDailyOrders = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/dailyorders`);
+    return response.data.data; 
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Error al obtener órdenes diarias");
+  }
+};
+
+// Actualizar estado de orden
+export const updateOrderStatus = async (orderId, estado) => {
+  try {
+      const response = await axios.put(`${API_URL}/dailyorders/${orderId}`, { estado });
+      console.log(response)
+      return response.data;
+  } catch (error) {
+      throw new Error(error.response?.data?.message || "Error al actualizar el estado");
+  }
 };

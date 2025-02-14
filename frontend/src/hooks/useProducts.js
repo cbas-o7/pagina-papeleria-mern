@@ -8,7 +8,7 @@ export const useProducts = () => {
   const fetchProducts = async () => {
     try {
       const data = await getProducts();
-
+      //console.log("el pepe")
       setProducts(data.products);
       setCategories(data.categories);
     } catch (err) {

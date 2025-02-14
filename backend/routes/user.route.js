@@ -17,7 +17,12 @@ import { getUserLogin,
     addCategory,
     editCategory,
     deleteCategory,
-    getCategories
+    getCategories,
+    checkout,
+    getPendingOrdersByUserId,
+    cancelOrder,
+    getDailyOrders,
+    updateOrderStatus
  } from "../controller/user.controller.js";
 
 const router = express.Router()
@@ -46,11 +51,22 @@ router.post("/favorites/add", addFavorite);
 
 router.post("/favorites/remove", removeFavorite);
 
+
 router.post("/cart", getCart);
 
 router.patch("/cart/update", updateCart);
 
 router.post("/cart/add", addToCart);
+
+router.post("/checkout", checkout);
+
+router.get("/orders/pending", getPendingOrdersByUserId);
+
+router.delete("/orders/cancel/:id", cancelOrder)
+
+
+
+
 
 
 
@@ -67,5 +83,9 @@ router.put("/category/edit/:id", editCategory)
 router.delete("/category/delete/:id", deleteCategory)
 
 router.get("/categories", getCategories)
+
+router.get("/dailyorders", getDailyOrders)
+
+router.put("/dailyorders/:orderId", updateOrderStatus);
 
 export default router

@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { getCartByUserId, updateCartQuantity, addToCart } from "../services/api";
+import { getCartByUserId, updateCartQuantity, addToCart, checkoutOrder } from "../services/api";
+import Swal from "sweetalert2";
 
 export default function useCart(userId) {
     const [cartItems, setCartItems] = useState([]);
@@ -30,7 +31,20 @@ export default function useCart(userId) {
     const addProductToCart = async (productId, price, name, image) => {
         const updatedCart = await addToCart(userId, productId, price, name, image);
         if (updatedCart) setCartItems(updatedCart.products);
-      };
+    };
 
-    return { cartItems, setCartItems, updateQuantity, addProductToCart };
+    const addOrder  = async (order) => {
+        const updatedCart = await checkoutOrder(order);
+        //console.log(updatedCart)
+
+
+        if (updatedCart.success) {
+            setCartItems([]); // Limpiar el carrito
+            Swal.fire("Compra realizada", "Tu pedido ha sido registrado.", "success");
+        } 
+
+        //if (updatedCart) setCartItems(updatedCart.products);
+    };
+
+    return { cartItems, setCartItems, updateQuantity, addProductToCart, addOrder };
 }

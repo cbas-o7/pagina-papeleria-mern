@@ -6,6 +6,8 @@ import ProductList from "./ProductList"
 import ProductForm from "./ProductForm"
 import { deleteProduct } from "../../services/api"
 import { useProducts } from "../../hooks/useProducts"
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { IconContext } from "react-icons/lib";
 
 
 export default function ProductManagement() {
@@ -14,21 +16,19 @@ export default function ProductManagement() {
 
   const { products, categories: originalCategories, fetchProducts } = useProducts()
   //fetchProducts()
-  const categories = originalCategories.filter(category => category.name !== "All")
-    //.map(category => category.name)
+  //const categories = originalCategories.filter(category => category.name !== "All")
+  //.map(category => category.name)
 
   //console.log(categories)
 
   //console.log(categories)
 
   const handleAddProduct = () => {
-    fetchProducts()
     setEditingProduct(null)
     setShowProductForm(true)
   }
 
   const handleEditProduct = (product) => {
-    fetchProducts()
     setEditingProduct(product)
     setShowProductForm(true)
   }
@@ -42,7 +42,8 @@ export default function ProductManagement() {
     //fetchProducts()
     //console.log(`Deleting product with id: ${productId}`)
 
-    deleteProduct(productId)
+    deleteProduct(productId, fetchProducts)
+
   }
 
   return (
@@ -51,18 +52,21 @@ export default function ProductManagement() {
         <div className="col-lg-3">
           <div className="card shadow-sm h-100">
             <div className="card-body">
-              <h3 className="card-title mb-4">Categories</h3>
-              <CategoryManagement fetchCategories={fetchProducts}/>
+              <h3 className="card-title mb-4">Categorias</h3>
+              <CategoryManagement fetchCategories={fetchProducts} />
             </div>
           </div>
         </div>
-        <div className="col-lg-9">
+        <div className="col-lg-9 mb-3">
           <div className="card shadow-sm h-100">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-center mb-4">
-                <h3 className="card-title m-0">Products</h3>
-                <button className="btn btn-primary" onClick={handleAddProduct}>
-                  <i className="bi bi-plus-lg me-2"></i>Add New Product
+                <h3 className="card-title m-0">Productos</h3>
+                <button className="btn btn-primary d-flex align-items-center" onClick={handleAddProduct}>
+                  <IconContext.Provider value={{ className: "text-white opacity-75 fs-4 me-1" }}>
+                    <IoIosAddCircleOutline />
+                  </IconContext.Provider>
+                  Agregar Producto
                 </button>
               </div>
               <ProductList onEditProduct={handleEditProduct} onDeleteProduct={handleDeleteProduct} initialProducts={products} />
@@ -70,7 +74,7 @@ export default function ProductManagement() {
           </div>
         </div>
       </div>
-      {showProductForm && <ProductForm product={editingProduct} onClose={handleProductFormClose} initialCategories={categories} />}
+      {showProductForm && <ProductForm product={editingProduct} onClose={handleProductFormClose} fetchProducts={fetchProducts} />}
     </div>
   )
 }

@@ -29,23 +29,28 @@ export default function useAdminCategories() {
     }
   }
 
-  const handleEditCategory = async (categoryId, newName) => {
+  const handleEditCategory = async (categoryId, newName, fetchCategories) => {
     try {
       await updateCategory(categoryId, newName);
       setCategories(
         categories.map((cat) => (cat._id === categoryId ? { ...cat, name: newName } : cat))
       );
+      fetchCategories()
     } catch (err) {
       console.error("Error updating category:", err.message);
     }
   };
 
-  const handleDeleteCategory = async (categoryId) => {
+  const handleDeleteCategory = async (categoryId, categoryName, showPopup) => {
     try {
       await deleteCategory(categoryId);
       setCategories(categories.filter((cat) => cat._id !== categoryId));
     } catch (err) {
-      console.error("Error deleting category:", err.message);
+      if (err.response && err.response.status === 400) {
+        showPopup(`No puedes eliminar la categoría "${categoryName}" porque tiene productos asociados. Por favor, borre los productos con esta categoría antes de eliminarla.`);
+      } else {
+        console.error("Error deleting category:", err.message);
+      }
     }
   };
 

@@ -9,6 +9,7 @@ import {
     deleteImageFromFirebase
 } from "../firebase.js";
 import mongoose from "mongoose";
+import DailyOrder from "../models/dailyOrder.js";
 
 export const getUserLogin = async (req, res) => {
     const { email, password } = req.body; // Recoge email y password de los parámetros de consulta
@@ -132,6 +133,65 @@ export const getOrdersByUserId = async (req, res) => {
         res.status(500).json({ success: false, message: "Error en el servidor" });
     }
 };
+
+export const getPendingOrdersByUserId = async (req, res) => {
+    const { userId } = req.query; // Recibir el userId en el body
+
+    if (!userId) {
+        return res.status(400).json({ success: false, message: "Falta el userId" });
+    }
+
+    try {
+        const orders = await Order.find({ userId, estado: "Por entregar" }).populate("products.productId");
+
+
+        if (!orders.length) {
+            return res.status(202).json({ success: false, message: "No hay órdenes para este usuario." });
+        }
+
+
+        res.status(200).json({ success: true, data: orders });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error en el servidor" });
+    }
+};
+
+export const cancelOrder = async (req, res) => {
+    const orderId = req.params.id;
+    //console.log(req.body)
+
+    if (!orderId) {
+        return res.status(400).json({ success: false, message: "Falta el orderId" });
+    }
+
+    try {
+        const order = await Order.findById(orderId);
+
+        if (!order) {
+            return res.status(404).json({ success: false, message: "Orden no encontrada." });
+        }
+
+        if (order.estado !== "Por entregar") {
+            return res.status(400).json({ success: false, message: "Solo puedes cancelar órdenes 'Por entregar'." });
+        }
+
+        order.estado = "Cancelado";
+        await order.save();
+
+        // Buscar y actualizar DailyOrder si existe
+        const dailyOrder = await DailyOrder.findOne({ orderId });
+        if (dailyOrder) {
+            dailyOrder.estado = "Cancelado";
+            await dailyOrder.save();
+        }
+
+        res.status(200).json({ success: true, message: "Orden cancelada correctamente.", data: order });
+    } catch (error) {
+        console.error("Error cancelando la orden:", error);
+        res.status(500).json({ success: false, message: "Error en el servidor" });
+    }
+};
+
 
 export const addFavorite = async (req, res) => {
     const { userId, productId } = req.body;
@@ -289,6 +349,47 @@ export const addToCart = async (req, res) => {
     }
 };
 
+export const checkout = async (req, res) => {
+    try {
+        const { userId, products, total } = req.body;
+
+        //console.log(user, products, total)
+
+        if (!userId || !products.length) {
+            return res.status(400).json({ success: false, message: "Datos incompletos" });
+        }
+
+        const newOrder = new Order({ userId, products, total });
+        await newOrder.save();
+
+        const user = await User.findById(userId);
+        const ordenDelDia = new DailyOrder({
+            orderId: newOrder._id,
+            email: user.email,
+            products,
+            total,
+        });
+
+        await ordenDelDia.save();
+
+        const cart = await Cart.findOne({ userId });
+
+        if (!cart) {
+            return res.status(404).json({ success: false, message: "Carrito no encontrado" });
+        }
+
+        cart.products = [];
+
+        await cart.save();
+
+        res.status(200).json({ success: true, message: "Orden registrada" });
+    } catch (error) {
+        console.error("Error en checkout:", error);
+        res.status(500).json({ success: false, message: "Error al procesar la compra" });
+    }
+};
+
+
 
 
 export const addProduct = async (req, res) => {
@@ -345,14 +446,19 @@ export const updateProduct = async (req, res) => {
         }
 
         let imageUrl = product.image; // Mantiene la imagen anterior
-        console.log("imagen: ", file)
+
+        //console.log("imagen: ", file)
         if (file) {
             // Si hay una nueva imagen, eliminar la anterior y subir la nueva
-            console.log("entre en cambiar imagen jeje")
+            //console.log("entre en cambiar imagen jeje")
             //await deleteImageFromFirebase(id);
             imageUrl = await addProductToFirebase(id, file);
         }
 
+        //const oldName = product.name;
+        //const oldPrice = product.price;
+
+        // Actualizar el producto
         product.name = name;
         product.price = `$${parseFloat(price).toFixed(2)}`;
         product.description = description;
@@ -360,7 +466,20 @@ export const updateProduct = async (req, res) => {
         product.image = imageUrl; // Actualizar la imagen
 
         await product.save();
-        res.status(200).json({ success: true, product });
+
+        // Actualizar en el carrito si el producto ya está agregado
+        await Cart.updateMany(
+            { "products.productId": id },
+            {
+                $set: {
+                    "products.$[elem].name": name,
+                    "products.$[elem].unitPrice": parseFloat(price).toFixed(2),
+                },
+            },
+            { arrayFilters: [{ "elem.productId": id }] }
+        );
+
+        res.status(200).json({ success: true, product, message: "Producto y carrito actualizados correctamente." });
     } catch (error) {
         console.error("Error al actualizar el producto:", error);
         res.status(500).json({ success: false, message: "Error al actualizar el producto" });
@@ -378,6 +497,18 @@ export const deleteProduct = async (req, res) => {
 
         // Eliminar el producto de la base de datos
         await Product.findByIdAndDelete(id);
+
+        // Eliminar el producto de todos los carritos
+        await Cart.updateMany(
+            { "products.productId": id },
+            { $pull: { products: { productId: id } } }
+        );
+
+        // Eliminar el producto de favoritos de todos los usuarios
+        await Favorite.updateMany(
+            { "favoriteProducts.productId": id },
+            { $pull: { favoriteProducts: { productId: id } } }
+        );
 
         // Eliminar la imagen de Firebase Storage (si tiene una)
         if (product.image) {
@@ -404,9 +535,25 @@ export const addCategory = async (req, res) => {
 };
 
 export const editCategory = async (req, res) => {
+    const { id } = req.params;
+    const { name } = req.body;
+
     try {
-        const updatedCategory = await Category.findByIdAndUpdate(req.params.id, { name: req.body.name }, { new: true });
-        res.json(updatedCategory);
+        const category = await Category.findById(id);
+        if (!category) {
+            return res.status(404).json({ message: "Categoría no encontrada" });
+        }
+
+        const oldCategoryName = category.name;
+
+        // Actualizar el nombre de la categoría
+        const updatedCategory = await Category.findByIdAndUpdate(id, { name }, { new: true });
+
+        // Actualizar los productos que tengan esta categoría
+        await Product.updateMany({ category: oldCategoryName }, { category: name });
+
+        //const updatedCategory = await Category.findByIdAndUpdate(req.params.id, { name: req.body.name }, { new: true });
+        res.json({ success: true, updatedCategory, message: "Categoría y productos actualizados correctamente." });
     } catch (err) {
         res.status(500).json({ message: "Error updating category" });
     }
@@ -414,8 +561,25 @@ export const editCategory = async (req, res) => {
 
 export const deleteCategory = async (req, res) => {
     try {
-        await Category.findByIdAndDelete(req.params.id);
-        res.json({ message: "Category deleted" });
+        const categoryId = req.params.id;
+
+        // Buscar la categoría en la base de datos por su ID
+        const category = await Category.findById(categoryId);
+        if (!category) {
+            return res.status(404).json({ message: "Categoría no encontrada" });
+        }
+
+        // Buscar productos con la categoría por nombre
+        const productsInCategory = await Product.find({ category: category.name });
+
+        if (productsInCategory.length > 0) {
+            return res.status(400).json({ message: "No se puede eliminar esta categoría porque hay productos asociados." });
+        }
+
+        // Eliminar la categoría
+        await Category.findByIdAndDelete(categoryId);
+
+        res.json({ message: "Categoría eliminada correctamente." });
     } catch (err) {
         res.status(500).json({ message: "Error deleting category" });
     }
@@ -427,5 +591,50 @@ export const getCategories = async (req, res) => {
         res.json(categories);
     } catch (err) {
         res.status(500).json({ message: "Error fetching categories" });
+    }
+};
+
+export const getDailyOrders = async (req, res) => {
+    try {
+        const dailyorders = await DailyOrder.find();
+        console.log(dailyorders)
+        if (!dailyorders.length) {
+            return res.status(404).json({ success: false, message: 'No se encontraron ordenes el dia de hoy' });
+        }
+
+        res.status(200).json({ success: true, data: dailyorders });
+    } catch (err) {
+        res.status(500).json({ success: false, message: "Error al obtener ordenes del dia" });
+    }
+
+};
+
+// Actualizar estado de orden en DailyOrder y Order
+export const updateOrderStatus = async (req, res) => {
+    const { orderId } = req.params;
+    const { estado } = req.body;
+    console.log(orderId)
+
+    if (!["Entregado", "Cancelado"].includes(estado)) {
+        return res.status(400).json({ success: false, message: "Estado no válido" });
+    }
+
+    try {
+        const dailyOrder = await DailyOrder.findOne({ orderId });
+        const order = await Order.findById(orderId);
+
+        if (!dailyOrder || !order) {
+            return res.status(404).json({ success: false, message: "Orden no encontrada" });
+        }
+
+        dailyOrder.estado = estado;
+        order.estado = estado;
+
+        await dailyOrder.save();
+        await order.save();
+
+        res.status(200).json({ success: true, message: "Estado actualizado correctamente", data: { dailyOrder, order } });
+    } catch (error) {
+        res.status(500).json({ success: false, message: "Error al actualizar el estado" });
     }
 };

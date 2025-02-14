@@ -26,10 +26,10 @@ export default function ProductList({ onEditProduct, onDeleteProduct , initialPr
                   <span className="fs-5 fw-bold text-primary">{product.price}</span>
                   <div>
                     <button className="btn btn-sm btn-outline-primary me-2" onClick={() => onEditProduct(product)}>
-                      <i className="bi bi-pencil me-1"></i>Edit
+                      <i className="bi bi-pencil me-1"></i>Editar
                     </button>
                     <button className="btn btn-sm btn-outline-danger" onClick={() => onDeleteProduct(product._id)}>
-                      <i className="bi bi-trash me-1"></i>Delete
+                      <i className="bi bi-trash me-1"></i>Borrar
                     </button>
                   </div>
                 </div>
