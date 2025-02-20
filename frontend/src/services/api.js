@@ -278,7 +278,7 @@ export const getCategories = async () => {
 export const getDailyOrders = async () => {
   try {
     const response = await axios.get(`${API_URL}/dailyorders`);
-    return response.data.data; 
+    return response.data.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Error al obtener órdenes diarias");
   }
@@ -287,10 +287,30 @@ export const getDailyOrders = async () => {
 // Actualizar estado de orden
 export const updateOrderStatus = async (orderId, estado) => {
   try {
-      const response = await axios.put(`${API_URL}/dailyorders/${orderId}`, { estado });
-      console.log(response)
-      return response.data;
+    const response = await axios.put(`${API_URL}/dailyorders/${orderId}`, { estado });
+    console.log(response)
+    return response.data;
   } catch (error) {
-      throw new Error(error.response?.data?.message || "Error al actualizar el estado");
+    throw new Error(error.response?.data?.message || "Error al actualizar el estado");
   }
 };
+
+export const saveStoreHours = async (workingHours) => {
+  try {
+    const response = await axios.post(`${API_URL}/store-hours`, { workingHours })
+
+    return response.data
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Error al actualizar el estado");
+  }
+}
+
+export const getStoreHours = async () => {
+  try {
+    const response = await axios.get(`${API_URL}/store-hours`)
+
+    return response.data
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Error al actualizar el estado");
+  }
+}

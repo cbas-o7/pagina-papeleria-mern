@@ -22,7 +22,9 @@ import { getUserLogin,
     getPendingOrdersByUserId,
     cancelOrder,
     getDailyOrders,
-    updateOrderStatus
+    updateOrderStatus,
+    saveStoreHours,
+    getStoreHours,
  } from "../controller/user.controller.js";
 
 const router = express.Router()
@@ -87,5 +89,10 @@ router.get("/categories", getCategories)
 router.get("/dailyorders", getDailyOrders)
 
 router.put("/dailyorders/:orderId", updateOrderStatus);
+
+
+router.post("/store-hours", saveStoreHours)
+
+router.get("/store-hours", getStoreHours)
 
 export default router

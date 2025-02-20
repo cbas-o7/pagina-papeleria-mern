@@ -1,11 +1,10 @@
 "use client"
 
 import { useState } from "react"
-
-const DAYS_OF_WEEK = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+import { useStoreHours } from "../../hooks/useStoreHours"
 
 export default function StoreInformation() {
-  const [workingHours, setWorkingHours] = useState({
+  /* const [workingHours, setWorkingHours] = useState({
     Monday: { status: "open", openTime: "09:00", closeTime: "18:00" },
     Tuesday: { status: "open", openTime: "09:00", closeTime: "18:00" },
     Wednesday: { status: "open", openTime: "09:00", closeTime: "18:00" },
@@ -32,14 +31,19 @@ export default function StoreInformation() {
   const handleSubmit = (e) => {
     e.preventDefault()
     console.log("Store working hours:", workingHours)
-  }
+  } */
+
+  //const { workingHours, handleStatusChange, handleTimeChange, handleSubmit, error } = useStoreHours()
+  const { workingHours, handleStatusChange, handleTimeChange, handleSubmit, loading, errorMessages } = useStoreHours()
+
+  if (loading) return <p>Cargando horario de tienda...</p>
 
   return (
     <div className="card shadow-sm">
       <div className="card-body">
-        <h2 className="card-title mb-4">Store Working Hours</h2>
+        <h2 className="card-title mb-4">Horas de trabajo de la tienda</h2>
         <form onSubmit={handleSubmit}>
-          {DAYS_OF_WEEK.map((day) => (
+          {Object.keys(workingHours).map((day) => (
             <div key={day} className="mb-4">
               <h3 className="h5 mb-3">{day}</h3>
               <div className="d-flex align-items-center mb-2">
@@ -52,7 +56,7 @@ export default function StoreInformation() {
                     onChange={() => handleStatusChange(day, "open")}
                   />
                   <label className="form-check-label" htmlFor={`${day}-open`}>
-                    Open
+                    Abierto
                   </label>
                 </div>
                 <div className="form-check form-check-inline">
@@ -64,7 +68,7 @@ export default function StoreInformation() {
                     onChange={() => handleStatusChange(day, "closed")}
                   />
                   <label className="form-check-label" htmlFor={`${day}-closed`}>
-                    Closed
+                    Cerrado
                   </label>
                 </div>
               </div>
@@ -72,7 +76,7 @@ export default function StoreInformation() {
                 <div className="row g-2">
                   <div className="col-6">
                     <label htmlFor={`${day}-open-time`} className="form-label">
-                      Opening Time
+                      Hora de apertura
                     </label>
                     <input
                       type="time"
@@ -81,10 +85,15 @@ export default function StoreInformation() {
                       value={workingHours[day].openTime}
                       onChange={(e) => handleTimeChange(day, "openTime", e.target.value)}
                     />
+
+                    {errorMessages[day]?.openTime && (
+                      <div className="text-danger">{errorMessages[day].openTime}</div>
+                    )}
+
                   </div>
                   <div className="col-6">
                     <label htmlFor={`${day}-close-time`} className="form-label">
-                      Closing Time
+                      Hora de cierre
                     </label>
                     <input
                       type="time"
@@ -93,13 +102,19 @@ export default function StoreInformation() {
                       value={workingHours[day].closeTime}
                       onChange={(e) => handleTimeChange(day, "closeTime", e.target.value)}
                     />
+
+                    {errorMessages[day]?.closeTime && (
+                      <div className="text-danger">{errorMessages[day].closeTime}</div>
+                    )}
+
                   </div>
                 </div>
               )}
             </div>
           ))}
+
           <button type="submit" className="btn btn-primary">
-            Save Working Hours
+            Guardar horas de trabajo
           </button>
         </form>
       </div>
