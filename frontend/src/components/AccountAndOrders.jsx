@@ -55,7 +55,7 @@ export default function AccountAndOrders() {
           <div className="card-header d-flex justify-content-between align-items-center">
             <div>
               <h5 className="mb-0">Pedido #{order._id}</h5>
-              <small className="text-muted">{order.fechaCreacion}</small>
+              <small className="text-muted">{new Date(order.fechaCreacion).toLocaleString("es-MX")}</small>
             </div>
 
             {order.estado === "Por entregar" && (

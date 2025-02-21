@@ -25,6 +25,7 @@ import { getUserLogin,
     updateOrderStatus,
     saveStoreHours,
     getStoreHours,
+    deleteAllOrders,
  } from "../controller/user.controller.js";
 
 const router = express.Router()
@@ -89,6 +90,8 @@ router.get("/categories", getCategories)
 router.get("/dailyorders", getDailyOrders)
 
 router.put("/dailyorders/:orderId", updateOrderStatus);
+
+router.delete("/dailyOrders/deleteAll", deleteAllOrders);
 
 
 router.post("/store-hours", saveStoreHours)

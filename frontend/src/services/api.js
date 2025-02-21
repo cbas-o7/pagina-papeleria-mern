@@ -288,12 +288,23 @@ export const getDailyOrders = async () => {
 export const updateOrderStatus = async (orderId, estado) => {
   try {
     const response = await axios.put(`${API_URL}/dailyorders/${orderId}`, { estado });
-    console.log(response)
+    //console.log(response)
     return response.data;
   } catch (error) {
     throw new Error(error.response?.data?.message || "Error al actualizar el estado");
   }
 };
+
+export const deleteAllDailyOrders = async () => {
+  try {
+    const response = await axios.delete(`${API_URL}/dailyOrders/deleteAll`);
+    //console.log(response)
+    return response;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || "Error al actualizar el estado");
+  }
+};
+
 
 export const saveStoreHours = async (workingHours) => {
   try {

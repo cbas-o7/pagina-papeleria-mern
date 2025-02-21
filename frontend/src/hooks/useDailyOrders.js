@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getDailyOrders, updateOrderStatus } from "../services/api";
+import { getDailyOrders, updateOrderStatus, deleteAllDailyOrders } from "../services/api";
 import Swal from "sweetalert2";
 
 
@@ -13,6 +13,7 @@ export const useDailyOrders = () => {
                 setOrders(data);
             } catch (error) {
                 console.error("Error fetching orders:", error);
+                
             }
         };
 
@@ -38,7 +39,7 @@ export const useDailyOrders = () => {
                         order.orderId === orderId ? { ...order, estado: newStatus } : order
                     )
                 );
-                
+
                 Swal.fire("¡Hecho!", "El estado ha sido actualizado.", "success");
             } catch (error) {
                 Swal.fire("Error", "No se pudo actualizar el estado.", "error");
@@ -46,5 +47,39 @@ export const useDailyOrders = () => {
         }
     };
 
-    return { orders, handleStatusChange };
+    const handleDeleteAllOrders = async () => {
+        // Verifica si hay órdenes "Por entregar"
+        const pendingOrders = orders.some((order) => order.estado === "Por entregar");
+
+        if (pendingOrders) {
+            return Swal.fire({
+                title: "Advertencia",
+                text: "Existen órdenes 'Por entregar'. Debes entregarlas o cancelarlas antes de eliminar todo.",
+                icon: "warning",
+                confirmButtonText: "Entendido",
+            });
+        }
+
+        const confirm = await Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Esta acción eliminará TODAS las órdenes. No se puede deshacer.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Sí, borrar todo",
+            cancelButtonText: "No, cancelar",
+        });
+
+        if (confirm.isConfirmed) {
+            try {
+                await deleteAllDailyOrders();
+                setOrders([]); // Vaciar el estado
+
+                Swal.fire("¡Eliminado!", "Todas las órdenes han sido eliminadas.", "success");
+            } catch (error) {
+                Swal.fire("Error", "No se pudieron eliminar las órdenes.", "error");
+            }
+        }
+    };
+
+    return { orders, handleStatusChange, handleDeleteAllOrders };
 };

@@ -360,6 +360,48 @@ export const checkout = async (req, res) => {
             return res.status(400).json({ success: false, message: "Datos incompletos" });
         }
 
+
+
+        // Obtener el horario de la tienda
+        const store = await StoreHours.findOne(); // Asegúrate de que exista el modelo con los horarios
+        if (!store || !store.workingHours) {
+            return res.status(500).json({ success: false, message: "No se encontró la información del horario de la tienda" });
+        }
+
+        // Obtener la fecha y hora actual
+        const now = new Date();
+        const currentDay = now.getDay(); // 0 = Domingo, 1 = Lunes, ..., 6 = Sábado
+        const currentTime = now.getHours() * 60 + now.getMinutes(); // Convertir hora a minutos
+
+        const daysOfWeek = ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"];
+        const today = daysOfWeek[currentDay];
+
+        const { status, openTime, closeTime } = store.workingHours[today];
+
+        if (status === "closed" || currentTime < timeToMinutes(openTime) || currentTime >= timeToMinutes(closeTime)) {
+            // Buscar el próximo día en que la tienda esté abierta
+            let nextOpeningDay = null;
+            let nextOpeningTime = null;
+
+            for (let i = 1; i <= 7; i++) {
+                const nextDay = daysOfWeek[(currentDay + i) % 7]; // Buscar el siguiente día
+                const { status, openTime } = store.workingHours[nextDay];
+
+                if (status === "open") {
+                    nextOpeningDay = nextDay;
+                    nextOpeningTime = openTime;
+                    break;
+                }
+            }
+
+            return res.status(403).json({
+                success: false,
+                message: `La tienda está cerrada. Podrás comprar el ${nextOpeningDay} a las ${nextOpeningTime}.`,
+            });
+        }
+
+
+
         const newOrder = new Order({ userId, products, total });
         await newOrder.save();
 
@@ -390,6 +432,10 @@ export const checkout = async (req, res) => {
     }
 };
 
+function timeToMinutes(time) {
+    const [hours, minutes] = time.split(":").map(Number);
+    return hours * 60 + minutes;
+}
 
 
 
@@ -639,6 +685,17 @@ export const updateOrderStatus = async (req, res) => {
         res.status(500).json({ success: false, message: "Error al actualizar el estado" });
     }
 };
+
+export const deleteAllOrders = async (req, res) => {
+    try {
+        await DailyOrder.deleteMany({});
+        res.status(200).json({ success: true, message: "Todas las órdenes han sido eliminadas." });
+    } catch (error) {
+        console.error("Error eliminando órdenes:", error);
+        res.status(500).json({ success: false, message: "No se pudieron eliminar las órdenes." });
+    }
+};
+
 
 
 export const saveStoreHours = async (req, res) => {
