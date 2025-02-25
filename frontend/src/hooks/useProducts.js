@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { getProducts } from "../services/api"; // Asegúrate de que la ruta sea correcta
+import { getProducts } from "../services/api";
 
 export const useProducts = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
-  //let fetchProducts;
+
   const fetchProducts = async () => {
     try {
       const data = await getProducts();
@@ -12,7 +12,7 @@ export const useProducts = () => {
       setProducts(data.products);
       setCategories(data.categories);
     } catch (err) {
-      console.error(err.message); // Si hay error, se muestra en consola
+      console.error(err.message); 
     }
   };
 
@@ -20,8 +20,11 @@ export const useProducts = () => {
   useEffect(() => {
 
     fetchProducts();
-  }
-    , []);
+
+    
+  }, []);
+
+  
 
   return { products, categories, fetchProducts }; // Retornamos solo los productos
 };

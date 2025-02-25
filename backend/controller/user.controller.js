@@ -11,6 +11,11 @@ import {
 import mongoose from "mongoose";
 import DailyOrder from "../models/dailyOrder.js";
 import StoreHours from "../models/store.js";
+import {emitStoreHours, 
+    emitNewOrder,
+    emitNewOrderStatus,
+    emitDeleteProduct
+} from "../socketEvents.js";
 
 export const getUserLogin = async (req, res) => {
     const { email, password } = req.body; // Recoge email y password de los parámetros de consulta
@@ -186,6 +191,8 @@ export const cancelOrder = async (req, res) => {
             await dailyOrder.save();
         }
 
+        emitNewOrderStatus(dailyOrder)
+
         res.status(200).json({ success: true, message: "Orden cancelada correctamente.", data: order });
     } catch (error) {
         console.error("Error cancelando la orden:", error);
@@ -279,6 +286,26 @@ export const getCart = async (req, res) => {
         if (!cart) {
             return res.status(404).json({ success: false, message: 'No se encontro carrito para este usuario' });
         }
+
+        //* 
+        // COMPRUEBA SI HAY PRODUCTOS ELIMINADOS EN EL CARRO Y LOS ELIMINA
+        // *//
+         // Obtener IDs de productos en el carrito
+         const productIds = cart.products.map(p => p.productId);
+
+         // Obtener los productos que aún existen en la base de datos
+         const existingProducts = await Product.find({ _id: { $in: productIds } });
+ 
+         // Filtrar productos eliminados
+         const existingProductIds = new Set(existingProducts.map(p => p._id.toString())); // Set con IDs existentes
+         const filteredProducts = cart.products.filter(p => existingProductIds.has(p.productId));
+ 
+         // Si hubo cambios, actualizar el carrito en la base de datos
+         if (filteredProducts.length !== cart.products.length) {
+             cart.products = filteredProducts;
+             await cart.save(); // Guardar cambios en la BD
+         }
+ 
 
         res.status(200).json({ success: true, data: cart.products });
     } catch (err) {
@@ -414,6 +441,8 @@ export const checkout = async (req, res) => {
         });
 
         await ordenDelDia.save();
+
+        emitNewOrder(ordenDelDia);
 
         const cart = await Cart.findOne({ userId });
 
@@ -562,6 +591,8 @@ export const deleteProduct = async (req, res) => {
             await deleteImageFromFirebase(product.image);
         }
 
+        emitDeleteProduct(id)
+
 
         res.json({ message: "Producto eliminado correctamente" });
     } catch (error) {
@@ -660,7 +691,7 @@ export const getDailyOrders = async (req, res) => {
 export const updateOrderStatus = async (req, res) => {
     const { orderId } = req.params;
     const { estado } = req.body;
-    console.log(orderId)
+    //console.log(orderId)
 
     if (!["Entregado", "Cancelado"].includes(estado)) {
         return res.status(400).json({ success: false, message: "Estado no válido" });
@@ -679,6 +710,8 @@ export const updateOrderStatus = async (req, res) => {
 
         await dailyOrder.save();
         await order.save();
+
+        emitNewOrderStatus(order)
 
         res.status(200).json({ success: true, message: "Estado actualizado correctamente", data: { dailyOrder, order } });
     } catch (error) {
@@ -710,6 +743,10 @@ export const saveStoreHours = async (req, res) => {
         }
 
         await store.save()
+
+        
+        emitStoreHours(store)
+
         res.status(200).json({ message: "Store hours saved successfully" })
     } catch (error) {
         res.status(500).json({ error: "Error saving store hours" })
@@ -723,6 +760,7 @@ export const getStoreHours = async (req, res) => {
             store = new StoreHours({ workingHours: {} })
             await store.save()
         }
+
         res.json(store)
     } catch (error) {
         res.status(500).json({ error: "Error fetching store hours" })

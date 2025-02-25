@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { getOrdersByUserId, cancelOrder } from "../services/api";
+import { useSocket } from "./useSocket";
 
+// dominio backend
 
 export const useOrders = (userId) => {
   const [orders, setOrders] = useState([]);
@@ -18,7 +20,10 @@ export const useOrders = (userId) => {
 
   useEffect(() => {
     fetchOrders();
+    
   }, []);
+
+  useSocket({ setOrders });
 
   const handleCancelOrder = async (orderId) => {
     try {

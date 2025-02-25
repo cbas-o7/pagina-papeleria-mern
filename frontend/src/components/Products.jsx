@@ -6,15 +6,6 @@ import ProductCard from "./ProductCard"
 import { useProducts } from "../hooks/useProducts"
 
 
-/* const categories = [
-  "All",
-  "Notebooks",
-  "Writing Instruments",
-  "Organizers",
-  "Art Supplies",
-  "Desk Accessories",
-  "Backpacks",
-] */
 
 
 
@@ -22,16 +13,12 @@ export default function Products() {
   const [selectedCategory, setSelectedCategory] = useState("All")
 
   const user = JSON.parse(localStorage.getItem('user'));
-  var userId = ""
   // Verificar si el usuario existe en localStorage
-  if (user) {
-    // Obtener el _id
-    userId = user._id;
-    //console.log('User ID:', userId);
-  } else {
-    console.log('No se encontró el usuario en localStorage.');
-  }
+  const userId = user ? user._id : "";
 
+  if (userId == "") {
+    console.log('No se encontró el usuario en localStorage. //ACCOUNT AND ORDERS')
+  }
 
   const { products, categories } = useProducts()
 
@@ -42,7 +29,7 @@ export default function Products() {
 
   return (
     <div className="container py-5">
-      <h1 className="text-center mb-5">Our Collection</h1>
+      <h1 className="text-center mb-5">Nuestros Productos</h1>
       <div className="row">
 
         {/* Apartado de eleccion de categoria */}

@@ -3,7 +3,6 @@ import { getFavoritesByUser, addFavorite, removeFavorite } from "../services/api
 
 const useFavorites = (userId) => {
     const [favorites, setFavorites] = useState([]);
-    const [isFavorite, setIsFavorite] = useState(false);
 
     useEffect(() => {
         if (userId) {

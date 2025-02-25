@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getDailyOrders, updateOrderStatus, deleteAllDailyOrders } from "../services/api";
 import Swal from "sweetalert2";
+import { useSocket } from "./useSocket";
 
 
 export const useDailyOrders = () => {
@@ -10,7 +11,12 @@ export const useDailyOrders = () => {
         const fetchOrders = async () => {
             try {
                 const data = await getDailyOrders();
-                setOrders(data);
+                //console.log("Data api: ", data)
+
+                // Ordenamos desde el principio
+                const sortedOrders = data.sort((a, b) => new Date(b.fechaCreacion) - new Date(a.fechaCreacion));
+                //console.log("Data api ordenada: ", sortedOrders)
+                setOrders(sortedOrders);
             } catch (error) {
                 console.error("Error fetching orders:", error);
                 
@@ -18,7 +24,10 @@ export const useDailyOrders = () => {
         };
 
         fetchOrders();
+
     }, []);
+
+    useSocket({ setOrders });
 
 
     const handleStatusChange = async (orderId, newStatus) => {

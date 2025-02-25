@@ -13,6 +13,9 @@ export default function AccountAndOrders() {
   const userId = user ? user._id : "";
 
 
+  if (userId == "") {
+    console.log('No se encontró el usuario en localStorage. //ACCOUNT AND ORDERS')
+  }
   const { orders, handleCancelOrder } = useOrders(userId)
 
   const toggleOrder = (orderId) => {

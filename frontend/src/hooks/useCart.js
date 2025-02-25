@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getCartByUserId, updateCartQuantity, addToCart, checkoutOrder, getStoreHours } from "../services/api";
 import Swal from "sweetalert2";
+import { useSocket } from "./useSocket";
 
 export default function useCart(userId) {
     const [cartItems, setCartItems] = useState([]);
@@ -19,6 +20,8 @@ export default function useCart(userId) {
 
         fetchData();
     }, [userId]);
+
+    useSocket({ setCartItems, setStoreHours });
 
     const isStoreOpen = () => {
         if (!storeHours) return false;
@@ -66,6 +69,14 @@ export default function useCart(userId) {
         let todayHours = storeHours[todayName];
 
         //console.log(todayName)
+        
+
+
+        console.log("1️⃣", todayName)
+        console.log("1️⃣", storeHours)
+        //console.log("1️⃣", openTimeParts)
+        //console.log("1️⃣", openTime)
+        console.log("===========")
 
         if (todayHours && todayHours.status === "open") {
             let openTimeParts = todayHours.openTime.split(":").map(Number);
@@ -81,6 +92,7 @@ export default function useCart(userId) {
         for (let i = 1; i < 7; i++) {
             let nextDay = daysOfWeek[(currentDayIndex + i) % 7];
             let nextDayHours = storeHours[nextDay];
+            //console.log("2️⃣", nextDay)
 
             if (nextDayHours && nextDayHours.status === "open") {
                 return `${nextDay} a las ${nextDayHours.openTime}`;

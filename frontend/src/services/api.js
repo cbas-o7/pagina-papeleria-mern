@@ -1,5 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { io } from "socket.io-client";
+
+//Web Socket
+export const socket = io("http://localhost:5000");
+
 // API_URL Desarrollo
 const API_URL = `http://localhost:5000`
 
@@ -155,7 +160,6 @@ export const addToCart = async (userId, productId, price, name, image) => {
 };
 
 export const checkoutOrder = async (orderData) => {
-  //const numericPrice = parseFloat(price.replace('$', ''));
 
   try {
     const response = await axios.post(`${API_URL}/checkout`, orderData);
@@ -208,22 +212,6 @@ export const addProduct = async (product) => {
     throw new Error(error.response?.data?.message || "Error en la solicitud");
   }
 }
-
-/* export const deleteProduct = async (product) => {
-  //console.log(product)
-
-  try {
-    const response = await axios.post(`${API_URL}/product/add`, product, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    return response.data; // Devuelve la respuesta del backend
-  } catch (error) {
-    console.error("Error al agregar producto:", error);
-    throw new Error(error.response?.data?.message || "Error en la solicitud");
-  }
-} */
 
 export const updateProduct = async (id, formData) => {
 

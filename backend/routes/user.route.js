@@ -55,6 +55,7 @@ router.post("/favorites/add", addFavorite);
 router.post("/favorites/remove", removeFavorite);
 
 
+
 router.post("/cart", getCart);
 
 router.patch("/cart/update", updateCart);
@@ -66,10 +67,6 @@ router.post("/checkout", checkout);
 router.get("/orders/pending", getPendingOrdersByUserId);
 
 router.delete("/orders/cancel/:id", cancelOrder)
-
-
-
-
 
 
 
