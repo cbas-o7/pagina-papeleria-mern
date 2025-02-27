@@ -38,14 +38,15 @@ export const getUserLogin = async (req, res) => {
         if (user.password !== password) {
             return res.status(401).json({ success: false, message: 'Contraseña incorrecta' });
         }
-
+        //console.log(user)
         // Si todo es correcto, devolver datos del usuario
         res.status(200).json({
             success: true,
             data: {
                 _id: user._id,
+                name: user.name,
                 email: user.email,
-                role: user.rol, // Enviar el rol en la respuesta
+                rol: user.rol, // Enviar el rol en la respuesta
             }
         });
     } catch (error) {
@@ -67,10 +68,14 @@ export const userSignup = async (req, res) => {
     }
 
     const newUser = new User(user)
-
+    //console.log(newUser)
     try {
         await newUser.save()
-        res.status(201).json({ success: true, data: newUser })
+        res.status(201).json({ success: true, data: {
+            _id: newUser._id,
+            email: newUser.email,
+            rol: newUser.rol, // Enviar el rol en la respuesta
+        }})
     } catch (error) {
         console.error(`Error creando usuario: ${error.message}`)
         res.status(500).json({ success: false, message: 'Error en el servidor' })
@@ -348,7 +353,7 @@ export const updateCart = async (req, res) => {
 export const addToCart = async (req, res) => {
     try {
         const { userId, productId, price, name, image } = req.body;
-        console.log({ userId, productId, price, name, image })
+        //console.log({ userId, productId, price, name, image })
         let cart = await Cart.findOne({ userId });
         //console.log(cart)
         if (!cart) {
@@ -675,7 +680,7 @@ export const getCategories = async (req, res) => {
 export const getDailyOrders = async (req, res) => {
     try {
         const dailyorders = await DailyOrder.find();
-        console.log(dailyorders)
+        //console.log(dailyorders)
         if (!dailyorders.length) {
             return res.status(404).json({ success: false, message: 'No se encontraron ordenes el dia de hoy' });
         }

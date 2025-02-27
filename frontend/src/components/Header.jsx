@@ -1,7 +1,7 @@
 import { VscAccount } from "react-icons/vsc";
 import { Link } from "react-router-dom"
 
-function Header() {
+function Header({ openLogin, isAuthenticated}) {
     return (
         <header className="bg-light shadow-sm">
             <div className="container py-3">
@@ -15,17 +15,29 @@ function Header() {
                                 Home
                             </Link>
                             <Link to="/products" className='nav-link text-secondary'>
-                                Products
+                                Productos
                             </Link>
-                            <Link to="/favorites" className='nav-link text-secondary'>
-                                Favorites
-                            </Link>
-                            <Link to="/cart" className='nav-link text-secondary'>
-                                Cart
-                            </Link>
-                            <Link to="/account" className='nav-link text-secondary'>
-                                <VscAccount size={28}/>
-                            </Link>
+
+                            {/* Si está autenticado, muestra los links de usuario */}
+                            {isAuthenticated ? (
+                                <>
+                                    <Link to="/favorites" className="nav-link text-secondary">
+                                        Favoritos
+                                    </Link>
+                                    <Link to="/cart" className="nav-link text-secondary">
+                                        Carrito
+                                    </Link>
+                                    <Link to="/account" className="nav-link text-secondary">
+                                        <VscAccount size={28} />
+                                    </Link>
+                                </>
+                            ) : (
+                                // Si NO está autenticado, muestra solo el botón de login
+                                <button onClick={openLogin} className="nav-link btn btn-primary">
+                                    Inicia sesion
+                                </button>
+                            )}
+                            
                         </nav>
                     </div>
                 </div>

@@ -88,9 +88,9 @@ export default function ShoppingCart() {
             <table className="table">
               <thead>
                 <tr>
-                  <th>Product</th>
-                  <th>Price</th>
-                  <th>Quantity</th>
+                  <th>Producto</th>
+                  <th>Precio</th>
+                  <th>Cantidad</th>
                   <th>Total</th>
                 </tr>
               </thead>

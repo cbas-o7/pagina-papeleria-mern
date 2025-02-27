@@ -69,7 +69,7 @@ export default function useCart(userId) {
         let todayHours = storeHours[todayName];
 
         //console.log(todayName)
-        
+
 
 
         console.log("1️⃣", todayName)
@@ -118,8 +118,16 @@ export default function useCart(userId) {
     };
 
     const addProductToCart = async (productId, price, name, image) => {
+        const user = localStorage.getItem("user");
+
+        if (!user) {
+            //openLogin(); // Abre el popup de login si no hay usuario
+            return;
+        }
+
         const updatedCart = await addToCart(userId, productId, price, name, image);
         if (updatedCart) setCartItems(updatedCart.products);
+
     };
 
     const addOrder = async (order) => {

@@ -20,7 +20,7 @@ export default function FavoriteProducts() {
 
   return (
     <div className="container py-5">
-      <h1 className="mb-4">Your Favorite Products</h1>
+      <h1 className="mb-4">Tus Productos Favoritos</h1>
       <div className="row row-cols-1 row-cols-md-3 g-4">
         {favoriteProducts.map((product) => (
           <Link to={`/products/${product._id}`} key={product._id} style={{ textDecoration: "none", color: "inherit" }}>

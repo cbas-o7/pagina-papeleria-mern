@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { SlArrowUp, SlArrowDown } from "react-icons/sl";
 import { MdCancel } from "react-icons/md";
 import { useOrders } from "../hooks/useOrders";
+import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 export default function AccountAndOrders() {
   const [openOrder, setOpenOrder] = useState(null); // Track which order is open
+
+  const navigate = useNavigate(); // Hook para la redirección
 
 
   const user = JSON.parse(localStorage.getItem('user'));
@@ -16,6 +19,7 @@ export default function AccountAndOrders() {
   if (userId == "") {
     console.log('No se encontró el usuario en localStorage. //ACCOUNT AND ORDERS')
   }
+
   const { orders, handleCancelOrder } = useOrders(userId)
 
   const toggleOrder = (orderId) => {
@@ -38,6 +42,23 @@ export default function AccountAndOrders() {
     });
   };
 
+  const handleLogout = () => {
+    Swal.fire({
+      title: "¿Cerrar sesión?",
+      text: "Se eliminarán tus datos de la sesión actual.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, cerrar sesión",
+      cancelButtonText: "Cancelar",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem("user"); // Eliminar los datos del usuario
+        navigate("/"); // Redirigir a la página de inicio
+        window.location.reload(); // Recargar la página para reflejar cambios en el Navbar
+      }
+    });
+  };
+
   return (
     <div className="container mt-5">
       <h1 className="mb-4">Tu cuenta</h1>
@@ -48,7 +69,9 @@ export default function AccountAndOrders() {
             <p className="mb-1 fw-bold">{user.name}</p>
             <p className="mb-1 text-muted">{user.email}</p>
           </div>
-          <button className="btn btn-primary ms-auto">Editar Perfil</button>
+          <button className="btn btn-danger ms-auto" onClick={handleLogout}>
+            Cerrar sesión
+          </button>
         </div>
       </div>
 
@@ -89,9 +112,9 @@ export default function AccountAndOrders() {
               <table className="table">
                 <thead>
                   <tr>
-                    <th scope="col">Product</th>
-                    <th scope="col">Price</th>
-                    <th scope="col">Quantity</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Cantidad</th>
                     <th scope="col">Total</th>
                   </tr>
                 </thead>

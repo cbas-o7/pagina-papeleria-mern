@@ -23,7 +23,6 @@ export const useOrders = (userId) => {
     
   }, []);
 
-  useSocket({ setOrders });
 
   const handleCancelOrder = async (orderId) => {
     try {

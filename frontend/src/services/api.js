@@ -13,8 +13,19 @@ const API_URL = `http://localhost:5000`
 
 export const signup = async (newUser) => {
   try {
+    //console.log("Signup", newUser)
     const response = await axios.post(`${API_URL}/signup`, newUser);
-    return response.data; // Retorna la respuesta del servidor
+    //await getUser(newUser)
+    
+    // Verifica si el usuario es admin o no
+    if (response.data.success) {
+      const userData = response.data.data;
+      console.log("Signup", response)
+      // Verifica si el usuario es admin o no
+      if (userData.rol === "user") {
+        localStorage.setItem("user", JSON.stringify(userData)); // Guarda solo en localStorage si es user
+      }
+    }
   } catch (error) {
     throw new Error(error.response?.data?.message || "Error en la solicitud");
   }
@@ -22,19 +33,14 @@ export const signup = async (newUser) => {
 
 export const getUser = async (user) => {
   try {
+    
     const response = await axios.post(`${API_URL}/login`, user);
-
-
+    console.log("Login", response)
     if (response.data.success) {
       const userData = response.data.data;
-      console.log('Usuario autenticado:', userData);
-      // Si el usuario es normal, guardamos sus datos en localStorage
-      if (userData.role === "user") {
-        localStorage.setItem("user", JSON.stringify(userData));
-      }
-
+      
       // Verifica si el usuario es admin o no
-      if (userData.role === "admin") {
+      if (userData.rol === "admin") {
         sessionStorage.setItem("admin", JSON.stringify(userData)); // Guarda solo en sessionStorage
       } else {
         localStorage.setItem("user", JSON.stringify(userData)); // Guarda solo en localStorage si es user

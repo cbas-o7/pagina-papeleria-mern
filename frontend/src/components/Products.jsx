@@ -33,10 +33,10 @@ export default function Products() {
       <div className="row">
 
         {/* Apartado de eleccion de categoria */}
-        <div className="col-md-3 mb-4">
+        <div className="col-md-3 mb-4 z-0">
           <div className="card">
             <div className="card-body">
-              <h5 className="card-title mb-3">Categories</h5>
+              <h5 className="card-title mb-3">Categorias</h5>
               <div className="list-group">
                 {categories.map((category) => (
                   <button
@@ -55,7 +55,7 @@ export default function Products() {
 
 
         {/* Apartado donde se despliegan los productos */}
-        <div className="col-md-9">
+        <div className="col-md-9 z-0">
           <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
 
             {/* Crea las tarjetas del producto llamando al componente ProductCard */}

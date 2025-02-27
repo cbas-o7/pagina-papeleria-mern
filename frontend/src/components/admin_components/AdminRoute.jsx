@@ -5,7 +5,7 @@ import { Navigate, Outlet } from "react-router-dom";
   const admin = JSON.parse(sessionStorage.getItem("admin"));
 
   // Si el usuario no existe o no es admin, lo redirigimos a la página principal
-  if (!admin || admin.role !== "admin") {
+  if (!admin || admin.rol !== "admin") {
     console.log("regresese we")
     return <Navigate to="/" />;
   }

@@ -19,7 +19,7 @@ const ProductsHome = ({ products }) => {
     return (
         <section className="py-5 bg-light">
             <div className="container">
-                <h2 className="text-center mb-5">Featured Products</h2>
+                <h2 className="text-center mb-5">Algunos de Nuestros Articulos</h2>
                 <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
 
                     {products.map((product) => (

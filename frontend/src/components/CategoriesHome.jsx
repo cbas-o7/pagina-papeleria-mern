@@ -10,7 +10,7 @@ const CategoriesHome = ({
     return (
         <section className="py-5">
             <div className="container">
-                <h2 className="text-center mb-4">Categories</h2>
+                <h2 className="text-center mb-4">Categorias</h2>
                 <div className="row row-cols-2 row-cols-sm-3 row-cols-md-6 g-3">
                     {categories.map((category, index) => (
                         <div key={index} className="col">
@@ -30,14 +30,14 @@ const CategoriesHome = ({
                         onClick={onPreviousPage}
                         disabled={!hasPreviousPage}
                     >
-                        Previous
+                        Anterior
                     </button>
                     <button
                         className="btn btn-primary"
                         onClick={onNextPage}
                         disabled={!hasNextPage}
                     >
-                        Next
+                        Siguiente
                     </button>
                 </div>
             </div>
