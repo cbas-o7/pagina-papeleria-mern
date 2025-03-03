@@ -7,12 +7,18 @@ import  router from "./routes/user.route.js";
 import {createServer} from "node:http"
 import { Server } from "socket.io";
 
+// URL FRONTEND-Produccion
+//const originUrl = "https://8xzt8k3b-3000.usw3.devtunnels.ms"
+
+// URL FRONTEND-Desarrollo
+const originUrl = "http://localhost:5173"
+
 
 const app = express()
 const server = createServer(app) // Usamos http.Server para soportar WebSockets
 const io = new Server(server, {
     cors: {
-        origin: "http://localhost:5173", //dominio del frontend
+        origin: originUrl, 
         methods: ["GET", "POST"]
     }
 });

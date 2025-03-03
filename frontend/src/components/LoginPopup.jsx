@@ -79,7 +79,7 @@ export default function LoginPopup({ isOpen, onClose, setIsAuthenticated }) {
                 <p className="text-center mb-0">
                     {isLogin ? "No tienes cuenta? " : "Ya tienes una cuenta? "}
                     <button className="btn btn-link p-0" onClick={toggleForm}>
-                        {isLogin ? "Inicia Sesion" : "Registrate"}
+                        {isLogin ? "Registrate" : "Inicia Sesion"}
                     </button>
                 </p>
                 <button className="btn btn-secondary mt-3 w-100" onClick={onClose}>

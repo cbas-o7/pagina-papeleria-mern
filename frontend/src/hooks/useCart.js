@@ -3,7 +3,7 @@ import { getCartByUserId, updateCartQuantity, addToCart, checkoutOrder, getStore
 import Swal from "sweetalert2";
 import { useSocket } from "./useSocket";
 
-export default function useCart(userId) {
+export default function useCart(userId, openLogin) {
     const [cartItems, setCartItems] = useState([]);
     const [storeHours, setStoreHours] = useState(null);
 
@@ -121,6 +121,27 @@ export default function useCart(userId) {
         const user = localStorage.getItem("user");
 
         if (!user) {
+            Swal.fire({
+                title: "Inicia Sesion",
+                text: "Inicia sesion para poder agregar productos a tu carrito",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Iniciar Sesion",
+                confirmButtonColor: "#0d6efd",
+                cancelButtonText: "Cancelar",
+                customClass: {
+                    confirmButton: "custom-confirm-button" // Clase personalizada
+                }
+                //confirmButtonText: "",
+                
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //console.log( openLogin)
+                    openLogin.openLogin();
+                }
+            });
+
+
             //openLogin(); // Abre el popup de login si no hay usuario
             return;
         }

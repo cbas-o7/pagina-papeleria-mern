@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Star, StarHalf } from "lucide-react"
 import { FaStar, FaRegStar } from "react-icons/fa";
 import { useProduct } from '../hooks/useProductById'
+import useCart from '../hooks/useCart';
 
 
 const initialComments = [
@@ -10,17 +11,23 @@ const initialComments = [
     { id: 3, author: "Mike Johnson", content: "Decent product, could be better.", rating: 3 },
 ]
 
-function ProductDetailed(id) {
-    const product = useProduct(id)
-
-    const [comments, setComments] = useState(initialComments)
-    const [newComment, setNewComment] = useState({ author: "", content: "", rating: 5 })
+function ProductDetailed({id, openLogin}) {
+    const product = useProduct({id})
+    //const [comments, setComments] = useState(initialComments)
+    //const [newComment, setNewComment] = useState({ author: "", content: "", rating: 5 })
 
     //console.log(product)
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    // Verificar si el usuario existe en localStorage
+    const userId = user ? user._id : "";
+    
+    const { addProductToCart } = useCart(userId, openLogin);
 
     if (!product) {
         return <div className="container mt-5">Product not found</div>
     }
+
 
 
     const handleCommentSubmit = (e) => {
@@ -51,7 +58,7 @@ function ProductDetailed(id) {
     }
 
     return (
-        <div className="container py-5">
+        <div className="container pt-5">
             <div className="row mb-5">
                 <div className="col-md-6">
                     <img
@@ -66,9 +73,28 @@ function ProductDetailed(id) {
                     <h1 className="mb-3">{product.name}</h1>
                     <p className="fs-3 text-primary mb-3">{product.price}</p>
                     <p className="mb-4">{product.description}</p>
-                    <button className="btn btn-primary btn-lg">Add to Cart</button>
+                    <button className="btn btn-primary btn-lg"
+                        onClick={(event) => {
+                            event.preventDefault()
+                            addProductToCart(product._id, product.price, product.name, product.image);
+                        }}
+                    >
+                        Agregar al carrito
+                    </button>
+                    {/* 
+                    <button className="btn btn-outline-dark w-100"
+                        onClick={(event) => {
+                            event.preventDefault()
+                            addProductToCart(product._id, product.price, product.name, product.image);
+                        }}
+                    >
+                        Agregar a carrito
+                    </button> */}
+
                 </div>
             </div>
+
+            {/*
             <div className="mb-12">
                 <h2 className="text-2xl font-bold mb-4">Customer Reviews</h2>
                 <div className="space-y-4">
@@ -134,6 +160,8 @@ function ProductDetailed(id) {
                     </button>
                 </form>
             </div>
+            */}
+
         </div>
     )
 }

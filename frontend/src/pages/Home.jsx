@@ -4,7 +4,7 @@ import { usePaginatedCategories } from "../hooks/usePaginatedCategories";
 import ProductsHome from "../components/ProductsHome";
 import CategoriesHome from "../components/CategoriesHome";
 
-export default function Home() {
+export default function Home(openLogin) {
 
     const {products, categories} = useRandomProducts();
     
@@ -40,7 +40,7 @@ export default function Home() {
                     hasPreviousPage={hasPreviousPage}
                 />
 
-                <ProductsHome products={products} />
+                <ProductsHome products={products} openLogin={openLogin}/>
             </main>
             
         </div>

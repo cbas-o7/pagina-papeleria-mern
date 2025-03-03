@@ -9,7 +9,7 @@ import { useProducts } from "../hooks/useProducts"
 
 
 
-export default function Products() {
+export default function Products(openLogin) {
   const [selectedCategory, setSelectedCategory] = useState("All")
 
   const user = JSON.parse(localStorage.getItem('user'));
@@ -64,7 +64,7 @@ export default function Products() {
 
 
               <Link to={`/products/${product._id}`} key={product._id} style={{ textDecoration: "none", color: "inherit" }}>
-                <ProductCard product={product} userId={userId} />
+                <ProductCard product={product} userId={userId} openLogin={openLogin}/>
               </Link>
 
             ))}

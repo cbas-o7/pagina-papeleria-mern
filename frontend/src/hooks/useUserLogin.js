@@ -27,10 +27,18 @@ export default function useUserLogin(setIsLogin, setIsAuthenticated, onClose) {
 
             const userData = await getUser(user); // Guardar usuario
 
-            setIsAuthenticated(true); // Actualizar estado global
+            //setIsAuthenticated(true) // Actualizar estado global
             //console.log("login redireccionando: ", userData)
 
-            navigate(userData.rol === "admin" ? "/adminhome" : "/");
+            //navigate(userData.rol === "admin" ? "/adminhome" : "/");
+
+            if(userData.rol === "admin"){
+                navigate("/adminhome")
+                
+            } else {
+                setIsAuthenticated(true)
+                //navigate("/")
+            }
             
             onClose()
         } catch (error) {

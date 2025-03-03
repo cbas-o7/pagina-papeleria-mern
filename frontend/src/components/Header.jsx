@@ -33,7 +33,7 @@ function Header({ openLogin, isAuthenticated}) {
                                 </>
                             ) : (
                                 // Si NO está autenticado, muestra solo el botón de login
-                                <button onClick={openLogin} className="nav-link btn btn-primary">
+                                <button onClick={openLogin} className="nav-link btn btn-outline-info">
                                     Inicia sesion
                                 </button>
                             )}

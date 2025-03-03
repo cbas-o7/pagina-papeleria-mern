@@ -4,42 +4,13 @@ import { useState } from "react"
 import { useStoreHours } from "../../hooks/useStoreHours"
 
 export default function StoreInformation() {
-  /* const [workingHours, setWorkingHours] = useState({
-    Monday: { status: "open", openTime: "09:00", closeTime: "18:00" },
-    Tuesday: { status: "open", openTime: "09:00", closeTime: "18:00" },
-    Wednesday: { status: "open", openTime: "09:00", closeTime: "18:00" },
-    Thursday: { status: "open", openTime: "09:00", closeTime: "18:00" },
-    Friday: { status: "open", openTime: "09:00", closeTime: "18:00" },
-    Saturday: { status: "open", openTime: "10:00", closeTime: "16:00" },
-    Sunday: { status: "closed", openTime: "", closeTime: "" },
-  })
 
-  const handleStatusChange = (day, status) => {
-    setWorkingHours((prev) => ({
-      ...prev,
-      [day]: { ...prev[day], status },
-    }))
-  }
-
-  const handleTimeChange = (day, field, value) => {
-    setWorkingHours((prev) => ({
-      ...prev,
-      [day]: { ...prev[day], [field]: value },
-    }))
-  }
-
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    console.log("Store working hours:", workingHours)
-  } */
-
-  //const { workingHours, handleStatusChange, handleTimeChange, handleSubmit, error } = useStoreHours()
   const { workingHours, handleStatusChange, handleTimeChange, handleSubmit, loading, errorMessages } = useStoreHours()
 
   if (loading) return <p>Cargando horario de tienda...</p>
 
   return (
-    <div className="card shadow-sm">
+    <div className="card shadow-sm mb-3">
       <div className="card-body">
         <h2 className="card-title mb-4">Horas de trabajo de la tienda</h2>
         <form onSubmit={handleSubmit}>

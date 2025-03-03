@@ -3,13 +3,13 @@ import axios from "axios";
 import { io } from "socket.io-client";
 
 //Web Socket
-export const socket = io("http://localhost:5000");
+export const socket = io("https://8xzt8k3b-5000.usw3.devtunnels.ms");
 
 // API_URL Desarrollo
 const API_URL = `http://localhost:5000`
 
 // API_URL Producccion 
-//const API_URL = "https://8xzt8k3b-5000.usw3.devtunnels.ms/"
+//const API_URL = "https://8xzt8k3b-5000.usw3.devtunnels.ms"
 
 export const signup = async (newUser) => {
   try {
@@ -20,7 +20,7 @@ export const signup = async (newUser) => {
     // Verifica si el usuario es admin o no
     if (response.data.success) {
       const userData = response.data.data;
-      console.log("Signup", response)
+      //console.log("Signup", response)
       // Verifica si el usuario es admin o no
       if (userData.rol === "user") {
         localStorage.setItem("user", JSON.stringify(userData)); // Guarda solo en localStorage si es user
@@ -35,7 +35,7 @@ export const getUser = async (user) => {
   try {
     
     const response = await axios.post(`${API_URL}/login`, user);
-    console.log("Login", response)
+    //console.log("Login", response)
     if (response.data.success) {
       const userData = response.data.data;
       

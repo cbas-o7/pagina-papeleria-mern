@@ -30,9 +30,9 @@ function AppContent() {
       <LoginPopup isOpen={isLoginOpen} onClose={closeLogin} setIsAuthenticated={setIsAuthenticated} />
 
       <Routes>
-        <Route path='/' element={<Home />}></Route>
-        <Route path='/products' element={<ProductsPage />}></Route>
-        <Route path='/products/:id' element={<ProductDetails />} />
+        <Route path='/' element={<Home openLogin={openLogin}/>}></Route>
+        <Route path='/products' element={<ProductsPage openLogin={openLogin}/>}></Route>
+        <Route path='/products/:id' element={<ProductDetails openLogin={openLogin}/>} />
         <Route path='/favorites' element={<Favorites />}></Route>
         <Route path='/cart' element={<Cart />}></Route>
         <Route path='/account' element={<Account />}></Route>

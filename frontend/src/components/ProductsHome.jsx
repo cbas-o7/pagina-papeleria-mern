@@ -3,7 +3,7 @@ import ProductCard from './ProductCard'
 import { Link } from "react-router-dom"
 
 
-const ProductsHome = ({ products }) => {
+const ProductsHome = ({ products, openLogin }) => {
 
     const user = JSON.parse(localStorage.getItem('user'));
 
@@ -24,7 +24,7 @@ const ProductsHome = ({ products }) => {
 
                     {products.map((product) => (
                         <Link to={`/products/${product._id}`} key={product._id} style={{ textDecoration: "none", color: "inherit" }}>
-                            <ProductCard product={product} userId={userId} />
+                            <ProductCard product={product} userId={userId} openLogin={openLogin}/>
                         </Link>
                     ))}
 

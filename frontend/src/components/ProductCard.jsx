@@ -4,11 +4,11 @@ import { IconContext } from "react-icons/lib";
 import useCart from "../hooks/useCart";
 
 
-export default function ProductCard({ product, userId }) {
+export default function ProductCard({ product, userId, openLogin}) {
 
     const { toggleFavorite, isProductFavorite } = useFavorites(userId);
     const isFavorite = isProductFavorite(product._id);
-    const { addProductToCart } = useCart(userId);
+    const { addProductToCart } = useCart(userId, openLogin);
 
     const handleFavoriteToggle = () => {
         //console.log(userId, product._id)
@@ -48,7 +48,7 @@ export default function ProductCard({ product, userId }) {
                             addProductToCart(product._id, product.price, product.name, product.image);
                         }}
                     >
-                        Add to Cart
+                        Agregar a carrito
                     </button>
                 </div>
             </div>

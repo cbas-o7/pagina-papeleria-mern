@@ -18,7 +18,7 @@ export const useProduct = (id) => {
         if (id) {
             fetchProduct();
         }
-    }, [id]);  // El hook se ejecutará cada vez que cambie el ID
+    }, []);  // El hook se ejecutará cada vez que cambie el ID
 
     
     return product ;
