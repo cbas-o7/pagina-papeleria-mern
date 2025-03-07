@@ -1,20 +1,24 @@
 
 import ProductCard from './ProductCard'
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 
 const ProductsHome = ({ products, openLogin }) => {
 
     const user = JSON.parse(localStorage.getItem('user'));
 
-
     const userId = user ? user._id : "";
 
-    if (userId == ""){
+    if (userId == "") {
         console.log('No se encontró el usuario en localStorage. //HOME')
     }
 
-    //console.log( products);
+    const navigate = useNavigate()
+
+    const categoryClicked = () => {
+        navigate(`/products`);
+    }
+
 
     return (
         <section className="py-5 bg-light">
@@ -24,7 +28,7 @@ const ProductsHome = ({ products, openLogin }) => {
 
                     {products.map((product) => (
                         <Link to={`/products/${product._id}`} key={product._id} style={{ textDecoration: "none", color: "inherit" }}>
-                            <ProductCard product={product} userId={userId} openLogin={openLogin}/>
+                            <ProductCard product={product} userId={userId} openLogin={openLogin} />
                         </Link>
                     ))}
 
@@ -32,7 +36,12 @@ const ProductsHome = ({ products, openLogin }) => {
 
                 {/* Botón "Ver todos los productos" */}
                 <div className="d-flex justify-content-center mt-4 w-100">
-                    <button className="btn btn-dark">
+                    <button className="btn btn-dark"
+                        onClick={(event) => {
+                            event.preventDefault()
+                            categoryClicked()
+                        }}
+                    >
                         Ver todos los productos
                     </button>
                 </div>

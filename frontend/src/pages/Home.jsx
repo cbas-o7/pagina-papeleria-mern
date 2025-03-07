@@ -4,7 +4,7 @@ import { usePaginatedCategories } from "../hooks/usePaginatedCategories";
 import ProductsHome from "../components/ProductsHome";
 import CategoriesHome from "../components/CategoriesHome";
 
-export default function Home(openLogin) {
+export default function Home({openLogin}) {
 
     const {products, categories} = useRandomProducts();
     

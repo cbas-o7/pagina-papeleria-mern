@@ -9,6 +9,7 @@ export default function ProductCard({ product, userId, openLogin}) {
     const { toggleFavorite, isProductFavorite } = useFavorites(userId);
     const isFavorite = isProductFavorite(product._id);
     const { addProductToCart } = useCart(userId, openLogin);
+    
 
     const handleFavoriteToggle = () => {
         //console.log(userId, product._id)

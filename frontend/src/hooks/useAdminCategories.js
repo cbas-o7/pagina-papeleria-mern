@@ -9,7 +9,7 @@ export default function useAdminCategories() {
     const fetchCategories = async () => {
       try {
         let data = await getCategories();
-        data = data.filter(category => category.name !== "All")
+        data = data.filter(category => category.name !== "Todos")
         setCategories(data);
       } catch (err) {
         console.error("Error fetching categories:", err.message);

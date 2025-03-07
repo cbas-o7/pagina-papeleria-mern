@@ -1,7 +1,7 @@
 "use client"
 
 import { Link } from "react-router-dom"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import ProductCard from "./ProductCard"
 import { useProducts } from "../hooks/useProducts"
 
@@ -9,23 +9,27 @@ import { useProducts } from "../hooks/useProducts"
 
 
 
-export default function Products(openLogin) {
-  const [selectedCategory, setSelectedCategory] = useState("All")
+export default function Products({openLogin, chosenCategory}) {
+  const [selectedCategory, setSelectedCategory] = useState(chosenCategory)
+  const { products, categories } = useProducts()
+  //console.log(chosenCategory)
 
   const user = JSON.parse(localStorage.getItem('user'));
   // Verificar si el usuario existe en localStorage
   const userId = user ? user._id : "";
 
+  
+
   if (userId == "") {
     console.log('No se encontró el usuario en localStorage. //ACCOUNT AND ORDERS')
   }
 
-  const { products, categories } = useProducts()
+  
 
   //console.log(products , categories)
 
   const filteredProducts =
-    selectedCategory === "All" ? products : products.filter((product) => product.category === selectedCategory)
+    selectedCategory === "Todos" ? products : products.filter((product) => product.category === selectedCategory)
 
   return (
     <div className="container py-5">

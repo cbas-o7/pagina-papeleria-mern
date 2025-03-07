@@ -119,6 +119,7 @@ export default function useCart(userId, openLogin) {
 
     const addProductToCart = async (productId, price, name, image) => {
         const user = localStorage.getItem("user");
+        console.log(openLogin)
 
         if (!user) {
             Swal.fire({
@@ -137,7 +138,7 @@ export default function useCart(userId, openLogin) {
             }).then((result) => {
                 if (result.isConfirmed) {
                     //console.log( openLogin)
-                    openLogin.openLogin();
+                    openLogin();
                 }
             });
 

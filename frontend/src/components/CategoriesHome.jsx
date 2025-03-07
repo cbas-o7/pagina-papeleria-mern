@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const CategoriesHome = ({
     categories,
@@ -7,6 +8,14 @@ const CategoriesHome = ({
     hasNextPage,
     hasPreviousPage,
 }) => {
+
+    const navigate = useNavigate()
+
+    const categoryClicked = (category) => {
+        navigate(`/products?category=${encodeURIComponent(category)}`);
+    }
+
+
     return (
         <section className="py-5">
             <div className="container">
@@ -15,9 +24,14 @@ const CategoriesHome = ({
                     {categories.map((category, index) => (
                         <div key={index} className="col">
                             <div className="card h-100 text-center">
-                                <div className="card-body d-flex justify-content-center align-items-center">
+                                <button className="card-body btn btn-outline-secondary d-flex justify-content-center align-items-center"
+                                    onClick={(event) => {
+                                        event.preventDefault()
+                                        categoryClicked(category.name)
+                                    }}
+                                >
                                     <h3 className="card-title h5 mb-0">{category.name}</h3>
-                                </div>
+                                </button>
                             </div>
                         </div>
                     ))}
