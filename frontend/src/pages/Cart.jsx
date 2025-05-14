@@ -1,4 +1,4 @@
-import CartComponent from "../components/CartComponent";
+import CartComponent from "../components/cart/CartComponent";
 
 export default function Favorites() {
   return (

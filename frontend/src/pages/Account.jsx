@@ -1,4 +1,4 @@
-import AccountAndOrders from "../components/AccountAndOrders";
+import AccountAndOrders from "../components/user/AccountAndOrders";
 
 function Account() {
   return (

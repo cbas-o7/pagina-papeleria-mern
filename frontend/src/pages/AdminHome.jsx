@@ -2,10 +2,10 @@
 
 import { IoMenu } from "react-icons/io5";
 import { useState } from "react"
-import ProductManagement from "../components/admin_components/ProductManagement"
-import OrderManagement from "../components/admin_components/OrderManagement"
-import StoreInformation from "../components/admin_components/StoreInformation"
-import "../components/admin_components/productManagement.css"
+import ProductManagement from "../components/admin/ProductManagement"
+import OrderManagement from "../components/admin/OrderManagement"
+import StoreInformation from "../components/admin/StoreInformation"
+import "../components/admin/productManagement.css"
 import { useNavigate } from "react-router-dom";
 
 export default function AdminHome() {

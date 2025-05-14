@@ -7,15 +7,16 @@ import Cart from "./pages/Cart.jsx";
 import Account from "./pages/Account.jsx";
 import ProductDetails from "./pages/ProductDetails.jsx";
 import AdminHome from "./pages/AdminHome.jsx";
-import AdminRoute from "./components/admin_components/AdminRoute.jsx";
+import AdminRoute from "./components/admin/AdminRoute.jsx";
 import { useState } from "react";
-import Header from "./components/Header.jsx";
-import LoginPopup from "./components/LoginPopup.jsx";
-import Footer from "./components/Footer.jsx";
+import Header from "./components/common/Header.jsx";
+import LoginPopup from "./components/user/LoginPopup.jsx";
+import Footer from "./components/common/Footer.jsx";
+import { useAuth } from "./context/AuthContext"; // Importa el contexto
 
 function AppContent() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("user")); // Inicializa correctamente
+  const { user } = useAuth(); // Obtiene el usuario autenticado del contexto
 
   const location = useLocation(); // Obtiene la ruta actual
   const hideLayout = location.pathname.startsWith("/adminhome"); // Ocultar en admin
@@ -25,9 +26,9 @@ function AppContent() {
 
   return (
     <>
-      {/* Pasamos la función openLogin y el estado de autenticación al Header */}
-      {!hideLayout && <Header openLogin={openLogin} isAuthenticated={isAuthenticated} />}
-      <LoginPopup isOpen={isLoginOpen} onClose={closeLogin} setIsAuthenticated={setIsAuthenticated} />
+      {/* Usa user en vez de isAuthenticated */}
+      {!hideLayout && <Header openLogin={openLogin} isAuthenticated={!!user} />}
+      <LoginPopup isOpen={isLoginOpen} onClose={closeLogin} />
 
       <Routes>
         <Route path='/' element={<Home openLogin={openLogin}/>}></Route>
@@ -45,8 +46,6 @@ function AppContent() {
     </>
   )
 }
-
-
 
 export default function App() {
   return (

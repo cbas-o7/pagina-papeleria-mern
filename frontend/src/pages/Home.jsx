@@ -1,8 +1,8 @@
 
-import { useRandomProducts } from "../hooks/useRandomProducts";
-import { usePaginatedCategories } from "../hooks/usePaginatedCategories";
-import ProductsHome from "../components/ProductsHome";
-import CategoriesHome from "../components/CategoriesHome";
+import { useRandomProducts } from "../hooks/product/useRandomProducts";
+import { usePaginatedCategories } from "../hooks/category/usePaginatedCategories";
+import ProductsHome from "../components/product/ProductsHome";
+import CategoriesHome from "../components/category/CategoriesHome";
 
 export default function Home({openLogin}) {
 

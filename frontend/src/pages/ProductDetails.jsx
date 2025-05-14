@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import ProductDetailed from "../components/ProductDetailed";
+import ProductDetailed from "../components/product/ProductDetailed";
 
 
 function ProductDetails(openLogin) {

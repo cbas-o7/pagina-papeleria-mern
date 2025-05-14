@@ -1,5 +1,5 @@
 import { useSearchParams } from "react-router-dom";
-import Products from "../components/Products";
+import Products from "../components/product/Products";
 
 
 export default function ProductsPage({openLogin}) {
