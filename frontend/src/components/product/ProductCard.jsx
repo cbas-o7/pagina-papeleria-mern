@@ -1,4 +1,4 @@
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaHeart, FaRegHeart, FaRegStar, FaStar } from "react-icons/fa";
 import useFavorites from '../../hooks/favorite/useFavorites';
 import { IconContext } from "react-icons/lib";
 import useCart from "../../hooks/cart/useCart";
@@ -10,7 +10,7 @@ export default function ProductCard({ product, openLogin }) {
     const { toggleFavorite, isProductFavorite } = useFavorites(userId);
     const isFavorite = isProductFavorite(product._id);
     const { addProductToCart } = useCart(userId, openLogin);
-    
+
 
     const handleFavoriteToggle = () => {
         //console.log(userId, product._id)
@@ -41,6 +41,18 @@ export default function ProductCard({ product, openLogin }) {
                 <div className="card-body">
                     <h5 className="card-title">{product.name}</h5>
                     <p className="card-text">{product.price}</p>
+
+                    <div className="d-flex align-items-center mb-2">
+                        <div className="me-2">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                                <span key={star} className="text-warning">
+                                    {star <= product.averageRating ? <FaStar /> : <FaRegStar />}
+                                </span>
+                            ))}
+                        </div>
+                        <span className="text-muted small">{product.averageRating > 0 ? `${product.averageRating}/5` : "No ratings"}</span>
+                    </div>
+
                     <p className="card-text">
                         <small className="text-muted">{product.category}</small>
                     </p>

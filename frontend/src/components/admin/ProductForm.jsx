@@ -15,7 +15,7 @@ export default function ProductForm({ product, onClose, fetchProducts }) {
     currentImage: "",
   })
 
-  const { categories, setCategories } = useAdminCategories();
+  const { categories } = useAdminCategories();
   
 
   useEffect(() => {

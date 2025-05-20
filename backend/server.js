@@ -12,6 +12,8 @@ import categoryRouter from "./routes/category.route.js";
 import dailyOrderRouter from "./routes/dailyorder.route.js";
 import storeRouter from "./routes/store.route.js";
 import favoriteRouter from "./routes/favorite.route.js";
+//import orderRouter from "./routes/order.route.js";
+import commentRouter from "./routes/comment.route.js";
 
 // URL FRONTEND-Produccion
 //const originUrl = "https://8xzt8k3b-3000.usw3.devtunnels.ms"
@@ -43,6 +45,7 @@ app.use("/", categoryRouter);
 app.use("/", dailyOrderRouter);
 app.use("/", storeRouter);
 app.use("/", favoriteRouter);
+app.use("/", commentRouter);
 // ...agrega aquí los otros routers...
 
 // Almacenar clientes conectados

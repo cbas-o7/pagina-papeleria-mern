@@ -1,7 +1,7 @@
 import express from "express";
 import {
     getProducts,
-    getRandomProducts,
+    getTopRatedProducts,
     getProduct,
     addProduct,
     updateProduct,
@@ -11,7 +11,7 @@ import {
 const productRouter = express.Router();
 
 productRouter.get("/products", getProducts);
-productRouter.get("/", getRandomProducts);
+productRouter.get("/", getTopRatedProducts);
 productRouter.get("/products/:id", getProduct);
 productRouter.post("/product/add", addProduct);
 productRouter.post("/product/add/:id", updateProduct);

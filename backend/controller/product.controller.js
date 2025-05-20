@@ -2,28 +2,60 @@ import Category from "../models/category.js";
 import Product from "../models/product.js";
 import Cart from "../models/cart.js";
 import Favorite from "../models/favorite.js";
+import Comment from "../models/comment.js";
 import mongoose from "mongoose";
 import { addProductToFirebase, deleteImageFromFirebase } from "../firebase.js";
-import { emitDeleteProduct } from "../socket.js"; 
+import { emitDeleteProduct } from "../socket.js";
 
 export const getProducts = async (req, res) => {
     try {
         const products = await Product.find(); // Obtener productos de MongoDB
         const categories = await Category.find(); // Obtener categorías de MongoDB
 
-        res.status(200).json({ success: true, data: { products, categories } });
+        // Obtener ratings promedio para cada producto
+        const productsWithRatings = await Promise.all(products.map(async (product) => {
+            const comments = await Comment.find({ productId: product._id });
+            const averageRating = comments.length > 0
+                ? (comments.reduce((sum, c) => sum + c.rating, 0) / comments.length).toFixed(1)
+                : 0;
+            return {
+                ...product.toObject(),
+                averageRating: Number(averageRating)
+            };
+        }));
+
+        res.status(200).json({ success: true, data: { products: productsWithRatings, categories } });
     } catch (error) {
         console.error("Error al obtener productos:", error.message);
         res.status(500).json({ success: false, message: "Error en el servidor" });
     }
 };
 
-export const getRandomProducts = async (req, res) => {
+export const getTopRatedProducts = async (req, res) => {
     try {
-        const products = await Product.aggregate([{ $sample: { size: 6 } }]); // Obtiene 6 productos aleatorios
+        const products = await Product.find();
+
+        // Calcular rating promedio para cada producto
+        const productsWithRatings = await Promise.all(products.map(async (product) => {
+            const comments = await Comment.find({ productId: product._id });
+            const averageRating = comments.length > 0
+                ? (comments.reduce((sum, c) => sum + c.rating, 0) / comments.length).toFixed(1)
+                : 0;
+            return {
+                ...product.toObject(),
+                averageRating: Number(averageRating)
+            };
+        }));
+
+        // Ordenar por rating descendente y tomar los 6 mejores
+        const topProducts = productsWithRatings
+            .sort((a, b) => b.averageRating - a.averageRating)
+            .slice(0, 6);
+
         const categories = await Category.find();
 
-        res.status(200).json({ success: true, data: { products, categories } });
+
+        res.status(200).json({ success: true, data: { products: topProducts, categories } });
     } catch (error) {
         console.error("Error al obtener productos aleatorios:", error.message);
         res.status(500).json({ success: false, message: "Error en el servidor" });

@@ -11,6 +11,7 @@ export const useRandomProducts = () => {
       try {
         const data = await getRandomProducts();
         setProducts(data.products);
+        console.log(data.products);
         setCategories(data.categories);
       } catch (err) {
         console.error("Error al obtener productos: ", err);
