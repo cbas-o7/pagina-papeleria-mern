@@ -17,7 +17,7 @@ const CategoriesHome = ({
 
 
     return (
-        <section className="py-5">
+        <section className="py-2">
             <div className="container">
                 <h2 className="text-center mb-4">Categorias</h2>
                 <div className="row row-cols-2 row-cols-sm-3 row-cols-md-6 g-3">
