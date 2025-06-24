@@ -47,3 +47,35 @@ export const checkoutOrder = async (orderData) => {
     return { success: false };
   }
 };
+ 
+
+
+export const createPaypalOrder = async (orderData, setMessage) => {
+  try {
+    const response = await axios.post(`${API_URL}/paypal/orders`, orderData);
+
+    if (response.id) {
+      return response.id;
+    } else {
+      const errorDetail = response?.details?.[0];
+      const errorMessage = errorDetail
+        ? `${errorDetail.issue} ${errorDetail.description} (${response.debug_id})`
+        : JSON.stringify(response);
+
+      throw new Error(errorMessage);
+    }
+  } catch (error) {
+
+    console.error(error);
+    setMessage(
+      `Could not initiate PayPal Checkout...${error}`
+    );
+
+
+    throw new Error(error.response?.data?.message || "Error al crear la orden");
+  }
+}
+
+export const onApprove = async (orderId) => {
+
+}

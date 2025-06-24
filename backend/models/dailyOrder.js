@@ -14,6 +14,15 @@ const dailyOrder = new mongoose.Schema({
   total: { type: Number, required: true },
   estado: { type: String, enum: ["Por entregar", "Entregado", "Cancelado"], default: "Por entregar" },
   fechaCreacion: { type: Date, default: Date.now },
+  paymentMethod: { type: String, enum: ["paypal", "efectivo"], required: true }, // <--- NUEVO
+    shippingOption: { type: String, enum: ["delivery", "pickup"], required: true }, // <--- NUEVO
+    shippingAddress: {
+        fullName: String,
+        address: String,
+        city: String,
+        zipCode: String,
+        phone: String,
+    },
 });
 
 const DailyOrder = mongoose.model("DailyOrder", dailyOrder);

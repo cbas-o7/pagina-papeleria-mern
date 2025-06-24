@@ -109,11 +109,11 @@ export const addToCart = async (req, res) => {
 
 export const checkout = async (req, res) => {
     try {
-        const { userId, products, total } = req.body;
+        const { userId, products, total, paymentMethod, shippingOption, shippingAddress } = req.body;
 
         //console.log(user, products, total)
 
-        if (!userId || !products.length) {
+        if (!userId || !products.length || !paymentMethod || !shippingOption) {
             return res.status(400).json({ success: false, message: "Datos incompletos" });
         }
 
@@ -157,9 +157,19 @@ export const checkout = async (req, res) => {
             });
         }
 
+        // Solo permitir efectivo si shippingOption === "pickup"
+        if (paymentMethod === "efectivo" && shippingOption !== "pickup") {
+            return res.status(400).json({ success: false, message: "El pago en efectivo solo está disponible para recoger en tienda." });
+        }
 
-
-        const newOrder = new Order({ userId, products, total });
+        const newOrder = new Order({
+            userId,
+            products,
+            total,
+            paymentMethod,
+            shippingOption,
+            shippingAddress:shippingAddress ,
+        });
         await newOrder.save();
 
         const user = await User.findById(userId);
@@ -168,6 +178,9 @@ export const checkout = async (req, res) => {
             email: user.email,
             products,
             total,
+            paymentMethod,
+            shippingOption,
+            shippingAddress:shippingAddress ,
         });
 
         await ordenDelDia.save();

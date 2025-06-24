@@ -14,6 +14,8 @@ import storeRouter from "./routes/store.route.js";
 import favoriteRouter from "./routes/favorite.route.js";
 //import orderRouter from "./routes/order.route.js";
 import commentRouter from "./routes/comment.route.js";
+import paypalRouter from "./routes/paypal.route.js";
+import bodyParser from "body-parser";
 
 // URL FRONTEND-Produccion
 //const originUrl = "https://8xzt8k3b-3000.usw3.devtunnels.ms"
@@ -31,10 +33,15 @@ const io = new Server(server, {
     }
 });
 
+const {
+    PORT = 5000,
+} = process.env;
+
 // Middleware
 app.use(cors())
 app.use(fileUpload());
-app.use(express.json()) //nos permite aceptar JSON en los .body
+//app.use(express.json()) //nos permite aceptar JSON en los .body
+app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: true })); // Para procesar datos de formularios
 
 // Rutas agrupadas por dominio
@@ -46,6 +53,7 @@ app.use("/", dailyOrderRouter);
 app.use("/", storeRouter);
 app.use("/", favoriteRouter);
 app.use("/", commentRouter);
+app.use("/", paypalRouter);
 // ...agrega aquí los otros routers...
 
 // Almacenar clientes conectados
@@ -61,7 +69,7 @@ export {io}
 
 
 // Iniciar servidor
-const PORT = process.env.PORT || 5000;
+//const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => {
     connectDB()
     console.log(`Server started at: ${PORT}`)
