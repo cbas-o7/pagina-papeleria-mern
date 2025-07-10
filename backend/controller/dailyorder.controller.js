@@ -24,7 +24,7 @@ export const updateOrderStatus = async (req, res) => {
     const { estado } = req.body;
     //console.log(orderId)
 
-    if (!["Entregado", "Cancelado"].includes(estado)) {
+    if (!["Procesando", "Enviando", "Entregado", "Cancelado"].includes(estado)) {
         return res.status(400).json({ success: false, message: "Estado no válido" });
     }
 
