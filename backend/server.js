@@ -54,7 +54,6 @@ app.use("/", storeRouter);
 app.use("/", favoriteRouter);
 app.use("/", commentRouter);
 app.use("/", paypalRouter);
-// ...agrega aquí los otros routers...
 
 // Almacenar clientes conectados
 io.on("connection", (socket) => {

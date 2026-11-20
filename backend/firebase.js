@@ -6,15 +6,11 @@ dotenv.config();
 
 // Decodificar JSON desde la variable de entorno
 
-
 const serviceAccount = JSON.parse(process.env.GOOGLE_APPLICATION_CREDENTIALS)
 
 
 // Inicializa Firebase
-initializeApp({
-  credential: cert(serviceAccount),
-  storageBucket: 'papeleria-4b9da.firebasestorage.app',  // Cambia esto por tu bucket de Firebase
-});
+initializeApp(serviceAccount);
 const storage = getStorage().bucket();
 
 
